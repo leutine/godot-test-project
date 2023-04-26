@@ -20,6 +20,6 @@ func _on_area_3d_body_entered(body: Node):
 	queue_free()
 	
 	if body.has_node("Stats"):
-		var stats = body.get_node("Stats") as Stats
+		var stats = body.get_node("Stats")
 		stats.take_hit(damage)
 		

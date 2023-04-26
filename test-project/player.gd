@@ -60,7 +60,7 @@ func teleport(direction):
 	position = position + (direction * teleport_distance)
 	velocity = Vector3.ZERO
 
-func _unhandled_input(event: InputEvent) -> void:
+func _unhandled_input(_event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
 	var mouse_position: Vector3 = get_mouse_position()
 	
@@ -77,8 +77,8 @@ func _enter_tree() -> void:
 
 
 @rpc("call_local")
-func spawn_mob(position):
-	spawned_mob.emit(position)
+func spawn_mob(mob_position):
+	spawned_mob.emit(mob_position)
 
 
 func set_color(color: Color):

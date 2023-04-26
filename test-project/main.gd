@@ -67,22 +67,22 @@ func remove_player(peer_id):
 
 
 @rpc("any_peer")
-func client_spawn_mob(position):
-	create_enemy(position)
+func client_spawn_mob(mob_position):
+	create_enemy(mob_position)
 
 
-func create_enemy(position):
+func create_enemy(mob_position):
 	var enemy = Enemy.instantiate()
 	enemy.name = str(randi())
-	enemy.position = position
+	enemy.position = mob_position
 	$Enemies.add_child(enemy, true)
 
 
-func spawn_mob(position):
+func spawn_mob(mob_position):
 	if not is_multiplayer_authority():
-		client_spawn_mob.rpc(position)
+		client_spawn_mob.rpc(mob_position)
 		return
-	create_enemy(position)
+	create_enemy(mob_position)
 
 
 func _on_players_spawner_spawned(player: Player) -> void:

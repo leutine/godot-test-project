@@ -17,9 +17,9 @@ func start():
 
 
 func _on_timer_timeout():
-	spawn(enemy_type, enemies_num)
+	spawn(enemies_num)
 
 
-func spawn(enemy_type, number):
-	emit_signal("spawn_enemy", enemy_type, number)
+func spawn(number):
+	emit_signal("spawn_enemy", number)
 
