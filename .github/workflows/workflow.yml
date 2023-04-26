@@ -4,22 +4,33 @@ on:
   push: {}
   pull_request: {}
 
+env:
+  GODOT_VERSION: 4.0.2
+  EXPORT_NAME: test-project
+  PROJECT_PATH: test-project
+  
 jobs:
-  Godot:
-    runs-on: ubuntu-latest
+  export-windows:
+    name: Windows Export
+    runs-on: ubuntu-20.04
+    container:
+      image: barichello/godot-ci:$GODOT_VERSION
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
           lfs: true
-      - name: Build
-        id: build
-        uses: manleydev/build-godot-action@v1.4.1
-        with:
-          name: example
-          preset: win64
-          debugMode: "true"
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates
+          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+      - name: Windows Build
+        run: |
+          mkdir -v -p build/windows
+          cd $PROJECT_PATH
+          godot -v --export "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v1
         with:
-          name: test_win64
-          path: ${{ github.workspace }}/${{ steps.build.outputs.build }}
+          name: windows
+          path: build/windows
