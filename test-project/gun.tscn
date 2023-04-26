@@ -1,0 +1,101 @@
+[gd_scene load_steps=8 format=3 uid="uid://7c03sqbjd8vg"]
+
+[ext_resource type="Script" path="res://gun.gd" id="1_b8eue"]
+[ext_resource type="PackedScene" uid="uid://b3ngp714ckaf2" path="res://bullet.tscn" id="2_yuitu"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_p7xbe"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_elcwm"]
+albedo_color = Color(0.156863, 0.156863, 0.156863, 1)
+
+[sub_resource type="Animation" id="Animation_t1rbj"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BodyPivot:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(-0.581177, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_4dptx"]
+resource_name = "shoot"
+length = 0.3
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BodyPivot:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.581177, 0, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BodyPivot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tgqaa"]
+_data = {
+"RESET": SubResource("Animation_t1rbj"),
+"shoot": SubResource("Animation_4dptx")
+}
+
+[node name="Gun" type="Node3D"]
+transform = Transform3D(0.646061, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+script = ExtResource("1_b8eue")
+bullet = ExtResource("2_yuitu")
+
+[node name="BodyPivot" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.835817, 0.549008, 0, -0.549008, 0.835817, 0, 0, 0)
+
+[node name="ShootingMarker" type="Marker3D" parent="BodyPivot"]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.303933, 1.11562)
+
+[node name="Body" type="Node3D" parent="BodyPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0.5)
+
+[node name="Barrel" type="MeshInstance3D" parent="BodyPivot/Body"]
+transform = Transform3D(0.473, 0, 0, 0, 0.467, 0, 0, 0, 1.2, 0, 0, 0)
+mesh = SubResource("BoxMesh_p7xbe")
+skeleton = NodePath("../../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_elcwm")
+
+[node name="Muzzle" type="MeshInstance3D" parent="BodyPivot/Body"]
+transform = Transform3D(0.395122, 0, 0, 0, 0.32401, 0, 0, 0, 0.320367, 0, 0, 0.54741)
+mesh = SubResource("BoxMesh_p7xbe")
+skeleton = NodePath("../../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_elcwm")
+
+[node name="Handle" type="MeshInstance3D" parent="BodyPivot/Body"]
+transform = Transform3D(-1.09279e-08, 7.57103e-09, -0.420714, 0.433013, 0.1, 0, 0.25, -0.173205, -1.839e-08, 0, -0.326939, -0.494925)
+mesh = SubResource("BoxMesh_p7xbe")
+skeleton = NodePath("../../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_elcwm")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_tgqaa")
+}
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
