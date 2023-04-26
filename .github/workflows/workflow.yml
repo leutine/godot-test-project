@@ -6,8 +6,8 @@ on:
 
 env:
   GODOT_VERSION: 3.5.1
-  EXPORT_NAME: test-project
-  PROJECT_PATH: test-project
+  EXPORT_NAME: godot-test-project
+  PROJECT_PATH: godot-test-project
   
 jobs:
   export-windows:
