@@ -15,3 +15,7 @@ mono_crash.*.json
 .vscode
 exports
 addons
+.godot/editor/*
+.godot/exported/*
+.godot/imported/*
+.godot/shader_cache/*
