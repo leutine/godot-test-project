@@ -5,12 +5,14 @@ class_name Player
 @export var teleport_distance = 5.0
 @export var dodge_speed = 500.0
 @export var name_label_text = "Player"
+@export var color = Color.BLACK
 @onready var start_position = position
 @onready var gun_controller = $GunController
 @onready var pivot = $Mesh
 @onready var body: MeshInstance3D = $Mesh/Body
 @onready var name_label: Label3D = $NameLabel
-@onready var mpsync: MultiplayerSynchronizer = $MultiplayerSynchronizer
+
+@onready var material: StandardMaterial3D = StandardMaterial3D.new()
 var default_collision_mask = collision_mask
 
 
@@ -26,20 +28,15 @@ func get_mouse_position():
 	var ray_end = ray_origin + camera.project_ray_normal(mouse_position) * 2000
 	var intersection = space_state.intersect_ray(PhysicsRayQueryParameters3D.create(ray_origin, ray_end))
 	var target = intersection.get("position", Vector3())
-	target.y = pivot.position.y
+	target.y = position.y
 	return target
 
 
 func _physics_process(_delta):
 	if not is_multiplayer_authority(): return
-	if Input.is_action_just_pressed("ui_accept"):
-		print("reset!")
-		position = start_position
-		velocity = Vector3.ZERO
-	
 	var mouse_position: Vector3 = get_mouse_position()
 	if global_transform.origin != mouse_position:
-		pivot.look_at(mouse_position, Vector3.UP)
+		look_at(mouse_position, Vector3.UP)
 	
 	var move_direction2: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	var move_direction3: Vector3 = Vector3(move_direction2.x, 0, move_direction2.y)
@@ -55,13 +52,20 @@ func _physics_process(_delta):
 	if Input.is_action_pressed("primary_action"):
 		gun_controller.shoot.rpc()
 
+
 @rpc("call_local")
 func teleport(direction):
 	position = position + (direction * teleport_distance)
 	velocity = Vector3.ZERO
 
+
 func _unhandled_input(_event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
+	if Input.is_action_just_pressed("ui_accept"):
+		print("reset!")
+		position = start_position
+		velocity = Vector3.ZERO
+		
 	var mouse_position: Vector3 = get_mouse_position()
 	
 	if Input.is_action_just_pressed("spawn_mob"):
@@ -70,6 +74,8 @@ func _unhandled_input(_event: InputEvent) -> void:
 
 func _ready():
 	name_label.text = name_label_text
+	material.albedo_color = color
+	body.material_override = material
 
 
 func _enter_tree() -> void:
@@ -81,7 +87,12 @@ func spawn_mob(mob_position):
 	spawned_mob.emit(mob_position)
 
 
-func set_color(color: Color):
-	var material = StandardMaterial3D.new()
+@rpc("call_local")
+func set_color(new_color: Color):
+	color = new_color
 	material.albedo_color = color
 	body.material_override = material
+
+
+func set_player_name(new_name: String):
+	name_label.text = new_name

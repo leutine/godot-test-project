@@ -1,14 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://co5plf8mt2t47"]
+[gd_scene load_steps=9 format=3 uid="uid://co5plf8mt2t47"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_ar8oh"]
 [ext_resource type="Script" path="res://GunController.gd" id="2_8nl12"]
 [ext_resource type="PackedScene" uid="uid://7c03sqbjd8vg" path="res://gun.tscn" id="3_uooqv"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y0rev"]
-albedo_color = Color(0.14902, 0.498039, 0.72549, 1)
-
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_5q03q"]
-material = SubResource("StandardMaterial3D_y0rev")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7pa5p"]
 albedo_color = Color(0.52549, 1, 0.172549, 1)
@@ -29,6 +25,15 @@ properties/1/sync = true
 properties/2/path = NodePath("Mesh:rotation")
 properties/2/spawn = true
 properties/2/sync = true
+properties/3/path = NodePath("NameLabel:text")
+properties/3/spawn = true
+properties/3/sync = true
+properties/4/path = NodePath(".:material")
+properties/4/spawn = true
+properties/4/sync = true
+properties/5/path = NodePath(".:color")
+properties/5/spawn = true
+properties/5/sync = true
 
 [node name="Player" type="CharacterBody3D" groups=["players"]]
 collision_layer = 2

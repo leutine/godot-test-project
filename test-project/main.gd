@@ -1,10 +1,8 @@
 extends Node3D
 
 
-@onready var spawner = $Spawner
 @onready var main_menu = $UI/MainMenu
 @onready var address_edit = $UI/MainMenu/MarginContainer/VBoxContainer/AddressEdit
-@onready var e_spawner = $EnemiesSpawner
 @onready var color_rect = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/ColorRect
 @onready var name_edit = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/NameEdit
 
@@ -36,8 +34,8 @@ func add_player(peer_id):
 	player.position = Vector3(pos.x * SPAWN_RANDOM * randf(), 0, pos.y * SPAWN_RANDOM * randf())
 	player.set_multiplayer_authority(multiplayer.multiplayer_peer.get_unique_id())
 	$Players.add_child(player)
-	player.set_color(color_rect.color)
 	if player.is_multiplayer_authority():
+		player.set_color.rpc(color_rect.color)
 		player.spawned_mob.connect(spawn_mob)
 
 
@@ -57,6 +55,7 @@ func _on_join_button_pressed():
 	main_menu.hide()
 	
 	enet_peer.create_client(address_edit.text, PORT)
+#	enet_peer.create_client("localhost", PORT)
 	multiplayer.multiplayer_peer = enet_peer
 
 
@@ -87,8 +86,8 @@ func spawn_mob(mob_position):
 
 func _on_players_spawner_spawned(player: Player) -> void:
 	if player.is_multiplayer_authority():
-		print("player %s connected" % player.get_multiplayer_authority())
-		player.set_color(color_rect.color)
+		player.set_color.rpc(color_rect.color)
+		player.set_player_name(name_edit.text)
 		player.spawned_mob.connect(spawn_mob)
 
 

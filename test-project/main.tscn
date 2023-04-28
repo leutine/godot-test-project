@@ -1,8 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://dnrotuaj6yba"]
+[gd_scene load_steps=6 format=3 uid="uid://dnrotuaj6yba"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_3jncq"]
-[ext_resource type="PackedScene" uid="uid://dmfs5udv7n3su" path="res://enemy.tscn" id="2_dkw5v"]
-[ext_resource type="Script" path="res://Spawner.gd" id="4_jm5md"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_h8hxj"]
 vertices = PackedVector3Array(-11, -0.098362, -1, -10, -0.098362, -1.25, -2.75, -0.098362, -8, -2.75, -0.098362, -9.5, -12.5, -0.098362, -24, -24, -0.098362, -18, -24, -0.098362, -11.75, -12.5, -0.098362, -24, -24, -0.098362, -24, -24, -0.098362, -18, -24, -0.098362, 0.5, -12.25, -0.098362, 0.5, -11, -0.098362, -1, -24, -0.098362, -5.75, -2, -0.098362, -10.25, -0.5, -0.098362, -10.25, -0.75, -0.098362, -24, -24, -0.098362, -11.75, -24, -0.098362, -5.75, -11, -0.098362, -1, -2.75, -0.098362, -9.5, -0.75, -0.098362, -24, -12.5, -0.098362, -24, -2.75, -0.098362, -9.5, -2, -0.098362, -10.25, -0.75, -0.098362, -24, 2.5, -0.098362, -10.5, 2.5, -0.098362, -24, -0.75, -0.098362, -24, -0.5, -0.098362, -10.25, 24, -0.098362, -16.5, 24, -0.098362, -24, 13.25, -0.098362, -24, 2.5, -0.098362, -24, 2.5, -0.098362, -10.5, 3.5, -0.098362, -9.75, 13.25, -0.098362, -24, 13.25, -0.098362, -24, 3.5, -0.098362, -9.75, 3.5, -0.098362, -8.75, 24, -0.098362, -8.75, 24, -0.098362, -16.5, -9, -0.098362, -0.5, -6.25, -0.098362, 4, -5.5, -0.098362, 4.5, -2, -0.098362, -7, -2.75, -0.098362, -8, -10, -0.098362, -1.25, -9, -0.098362, -0.5, -2, -0.098362, -7, 3.5, -0.098362, -8, 2.5, -0.098362, -7, -5.5, -0.098362, 5.5, 24, -0.098362, 5.5, 24, -0.098362, -1.75, 24, -0.098362, -8.75, 3.5, -0.098362, -8.75, 3.5, -0.098362, -8, 24, -0.098362, -1.75, -2, -0.098362, -7, -5.5, -0.098362, 4.5, -5.5, -0.098362, 5.5, 2.5, -0.098362, -7, -24, -0.098362, 12.25, -24, -0.098362, 24, -15.75, -0.098362, 24, -9, -0.098362, 5.75, -12.25, -0.098362, 0.5, -24, -0.098362, 0.5, -9, -0.098362, 5.75, -24, -0.098362, 0.5, -24, -0.098362, 12.25, -15.75, -0.098362, 24, -7.25, -0.098362, 24, -7.25, -0.098362, 7, 16, -0.098362, 24, 24, -0.098362, 24, 24, -0.098362, 14.75, 8.25, -0.098362, 24, 16, -0.098362, 24, 24, -0.098362, 14.75, -5.5, -0.098362, 5.5, -7.25, -0.098362, 7, -7.25, -0.098362, 24, 0.5, -0.098362, 24, -5.5, -0.098362, 5.5, 0.5, -0.098362, 24, 8.25, -0.098362, 24, 24, -0.098362, 14.75, 24, -0.098362, 5.5)
@@ -54,11 +52,6 @@ transform = Transform3D(-12.1583, 0, -0.0182114, 0, 1.24815, 0, 0.207129, 0, -1.
 use_collision = true
 collision_mask = 0
 material = SubResource("StandardMaterial3D_544fh")
-
-[node name="Spawner" type="Node3D" parent="."]
-script = ExtResource("4_jm5md")
-
-[node name="Timer" type="Timer" parent="Spawner"]
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -132,25 +125,17 @@ text = "Join"
 [node name="PlayersSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://player.tscn")
 spawn_path = NodePath("../Players")
+spawn_limit = 5
 
 [node name="EnemiesSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://enemy.tscn")
 spawn_path = NodePath("../Enemies")
+spawn_limit = 20
 
 [node name="Enemies" type="Node" parent="."]
 
-[node name="Enemy" parent="Enemies" instance=ExtResource("2_dkw5v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.945, 0, 4.503)
-
-[node name="Enemy2" parent="Enemies" instance=ExtResource("2_dkw5v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.297, 0, -3.595)
-
-[node name="Enemy3" parent="Enemies" instance=ExtResource("2_dkw5v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.973, 0, -9.378)
-
 [node name="Players" type="Node" parent="."]
 
-[connection signal="timeout" from="Spawner/Timer" to="Spawner" method="_on_timer_timeout"]
 [connection signal="gui_input" from="UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/ColorRect" to="." method="_on_color_rect_gui_input"]
 [connection signal="pressed" from="UI/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="UI/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
