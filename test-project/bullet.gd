@@ -16,10 +16,5 @@ func _physics_process(delta):
 		queue_free()
 
 
-func _on_area_3d_body_entered(body: Node):
+func _on_area_3d_body_entered(_body: Node):
 	queue_free()
-	
-	if body.has_node("Stats"):
-		var stats = body.get_node("Stats")
-		stats.take_hit(damage)
-		
