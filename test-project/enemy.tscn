@@ -1,12 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://dmfs5udv7n3su"]
+[gd_scene load_steps=10 format=3 uid="uid://dmfs5udv7n3su"]
 
 [ext_resource type="Script" path="res://enemy.gd" id="1_ht8c7"]
 [ext_resource type="PackedScene" uid="uid://biut5o42ltd8q" path="res://stats.tscn" id="2_fsee3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3415e"]
+resource_local_to_scene = true
 albedo_color = Color(0.509804, 0.176471, 0.176471, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_ja5dd"]
+resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_3415e")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4onvx"]
@@ -18,9 +20,30 @@ properties/0/sync = true
 properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
 properties/1/sync = true
-properties/2/path = NodePath(".:visible")
-properties/2/spawn = true
-properties/2/sync = true
+
+[sub_resource type="Animation" id="Animation_u8ijr"]
+resource_name = "take_hit"
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:mesh:material:albedo_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1e-05, 0.554791, 1e-05),
+"update": 0,
+"values": [Color(0.509804, 0.176471, 0.176471, 1), Color(0.945098, 0.627451, 0.607843, 1), Color(0.509804, 0.176471, 0.176471, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_v0rsl"]
+_data = {
+"take_hit": SubResource("Animation_u8ijr")
+}
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8f014"]
 
 [node name="Enemy" type="CharacterBody3D" groups=["enemies"]]
 collision_layer = 4
@@ -45,5 +68,20 @@ avoidance_enabled = true
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_k6ckn")
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+reset_on_save = false
+libraries = {
+"": SubResource("AnimationLibrary_v0rsl")
+}
+
+[node name="Hurtbox" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_8f014")
+
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
 [connection signal="died_signal" from="Stats" to="." method="_on_stats_died_signal"]
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
