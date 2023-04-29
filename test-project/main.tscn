@@ -48,7 +48,7 @@ size = Vector3(1, 0.893183, 1)
 material = SubResource("StandardMaterial3D_544fh")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="NavigationRegion3D"]
-transform = Transform3D(-12.1583, 0, -0.0182114, 0, 1.24815, 0, 0.207129, 0, -1.069, 0.343, 0.5, -8.738)
+transform = Transform3D(-12.1583, 0, -0.0182114, 0, 1.24815, 0, 0.207129, 0, -1.069, 0.343, 0.0924337, -8.738)
 use_collision = true
 collision_mask = 0
 material = SubResource("StandardMaterial3D_544fh")
