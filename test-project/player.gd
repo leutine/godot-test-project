@@ -1,9 +1,11 @@
 extends CharacterBody3D
 class_name Player
 
-@export var speed = 10.0
+@export var move_speed = 1000.0
 @export var teleport_distance = 5.0
-@export var dodge_speed = 500.0
+@export var dodge_speed = 5000.0
+@export var dodge_duration = 0.2
+
 @export var name_label_text = "Player"
 @export var color = Color.BLACK
 @onready var start_position = position
@@ -11,6 +13,7 @@ class_name Player
 @onready var pivot = $Mesh
 @onready var body: MeshInstance3D = $Mesh/Body
 @onready var name_label: Label3D = $NameLabel
+@onready var dodge = $Dodge
 
 @onready var material: StandardMaterial3D = StandardMaterial3D.new()
 var default_collision_mask = collision_mask
@@ -32,7 +35,7 @@ func get_mouse_position():
 	return target
 
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	if not is_multiplayer_authority(): return
 	var mouse_position: Vector3 = get_mouse_position()
 	if global_transform.origin != mouse_position:
@@ -41,12 +44,15 @@ func _physics_process(_delta):
 	var move_direction2: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	var move_direction3: Vector3 = Vector3(move_direction2.x, 0, move_direction2.y)
 	move_direction3 = move_direction3.normalized()
-	if Input.is_action_just_pressed("dodge") and move_direction3 != Vector3.ZERO:
+	if Input.is_action_just_pressed("dodge") and move_direction3 != Vector3.ZERO and !dodge.is_dashing() and dodge.can_dash:
 #		teleport.rpc(move_direction3)
-		velocity = move_direction3 * dodge_speed
+		dodge.start_dash(dodge_duration)
+
+	if dodge.is_dashing():
 		set_collision_mask_value(3, false)
-	else:
-		velocity = move_direction3 * speed
+	
+	var speed = dodge_speed if dodge.is_dashing() else move_speed
+	velocity = move_direction3 * speed * delta
 	move_and_slide()
 	collision_mask = default_collision_mask
 	if Input.is_action_pressed("primary_action"):
