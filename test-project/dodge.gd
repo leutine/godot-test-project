@@ -1,8 +1,11 @@
 extends Node
 
-const dash_delay = 0.4
+const dash_delay = 3.0
 
 @onready var duration_timer = $DurationTimer
+@onready var cooldown_timer = $CooldownTimer
+
+@export var cooldown_duration_s = 3.0
 
 var can_dash = true
 
@@ -19,6 +22,7 @@ func is_dashing():
 func end_dash():
 	can_dash = false
 	await get_tree().create_timer(dash_delay).timeout
+	print("dash timeout!")
 	can_dash = true
 
 

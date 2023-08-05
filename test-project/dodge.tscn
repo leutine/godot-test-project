@@ -7,3 +7,6 @@ script = ExtResource("1_3n8ln")
 
 [node name="DurationTimer" type="Timer" parent="."]
 one_shot = true
+
+[node name="CooldownTimer" type="Timer" parent="."]
+one_shot = true
