@@ -17,9 +17,11 @@ material = SubResource("StandardMaterial3D_3415e")
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/sync = true
+properties/0/watch = false
 properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
 properties/1/sync = true
+properties/1/watch = false
 
 [sub_resource type="Animation" id="Animation_u8ijr"]
 resource_name = "take_hit"
@@ -60,7 +62,7 @@ shape = SubResource("CapsuleShape3D_4onvx")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 target_desired_distance = 2.0
-agent_height_offset = 0.1
+path_height_offset = 0.1
 avoidance_enabled = true
 
 [node name="Stats" parent="." instance=ExtResource("2_fsee3")]

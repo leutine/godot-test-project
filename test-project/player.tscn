@@ -20,21 +20,27 @@ size = Vector3(0.8, 0.3, 0.5)
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/sync = true
+properties/0/watch = false
 properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
 properties/1/sync = true
+properties/1/watch = false
 properties/2/path = NodePath("Mesh:rotation")
 properties/2/spawn = true
 properties/2/sync = true
+properties/2/watch = false
 properties/3/path = NodePath("NameLabel:text")
 properties/3/spawn = true
 properties/3/sync = true
+properties/3/watch = false
 properties/4/path = NodePath(".:material")
 properties/4/spawn = true
 properties/4/sync = true
+properties/4/watch = false
 properties/5/path = NodePath(".:color")
 properties/5/spawn = true
 properties/5/sync = true
+properties/5/watch = false
 
 [node name="Player" type="CharacterBody3D" groups=["players"]]
 collision_layer = 2
@@ -50,7 +56,7 @@ mesh = SubResource("CapsuleMesh_5q03q")
 skeleton = NodePath("../..")
 
 [node name="Hand" type="Marker3D" parent="Mesh/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.665665, 0.0199442, 0.238044)
+transform = Transform3D(0.999925, 0, 0.012217, 0, 1, 0, -0.012217, 0, 0.999925, -0.665665, 0.0199442, 0.238044)
 
 [node name="Eyes" type="MeshInstance3D" parent="Mesh/Body"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.452195, 0.307981)
