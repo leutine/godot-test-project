@@ -3,8 +3,8 @@ class_name Player
 
 @export var move_speed = 1000.0
 @export var teleport_distance = 5.0
-@export var dodge_speed = 5000.0
-@export var dodge_duration = 0.2
+@export var dodge_speed = 4000.0
+@export var dodge_duration = 0.1
 
 @export var name_label_text = "Player"
 @export var color = Color.BLACK
@@ -44,7 +44,7 @@ func _physics_process(delta):
 	var move_direction2: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	var move_direction3: Vector3 = Vector3(move_direction2.x, 0, move_direction2.y)
 	move_direction3 = move_direction3.normalized()
-	if Input.is_action_just_pressed("dodge") and move_direction3 != Vector3.ZERO and !dodge.is_dashing() and dodge.can_dash:
+	if Input.is_action_just_pressed("dodge") and !dodge.is_dashing() and dodge.can_dash:
 #		teleport.rpc(move_direction3)
 		dodge.start_dash(dodge_duration)
 
