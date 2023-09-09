@@ -30,10 +30,10 @@ func _on_stats_died_signal():
 	queue_free()
 
 
+# TODO: добывать урон не через родителя ареа3д (чтобы было универсально)
 func _on_hurtbox_area_entered(area: Area3D) -> void:
 	var parent = area.get_parent_node_3d()
 	var damage = 0
-	if parent is Bullet:
-		damage = parent.damage
+	damage = parent.damage
 	anim_player.play("take_hit")
 	stats.take_hit(damage)
