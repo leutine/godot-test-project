@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://co5plf8mt2t47"]
+[gd_scene load_steps=11 format=3 uid="uid://co5plf8mt2t47"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_ar8oh"]
 [ext_resource type="Script" path="res://GunController.gd" id="2_8nl12"]
-[ext_resource type="PackedScene" uid="uid://7c03sqbjd8vg" path="res://gun.tscn" id="3_uooqv"]
+[ext_resource type="PackedScene" uid="uid://dgajcf43paht0" path="res://sword.tscn" id="3_dcl53"]
 [ext_resource type="PackedScene" uid="uid://b5bjduqwda6j3" path="res://dodge.tscn" id="4_7ic7g"]
+[ext_resource type="PackedScene" uid="uid://7c03sqbjd8vg" path="res://gun.tscn" id="4_a8la2"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_5q03q"]
 
@@ -69,7 +70,7 @@ shape = SubResource("CapsuleShape3D_3oy5u")
 
 [node name="GunController" type="Node" parent="."]
 script = ExtResource("2_8nl12")
-starting_weapon = ExtResource("3_uooqv")
+weapons = Array[PackedScene]([ExtResource("4_a8la2"), ExtResource("3_dcl53")])
 
 [node name="NameLabel" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.518579, 0.85503, 0, -0.85503, 0.518579, 0, 2.23991, 0)

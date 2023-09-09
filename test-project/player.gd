@@ -20,6 +20,7 @@ var default_collision_mask = collision_mask
 
 
 signal spawned_mob
+signal swapped_weapon
 
 
 func get_mouse_position():
@@ -68,7 +69,6 @@ func teleport(direction):
 func _unhandled_input(_event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
 	if Input.is_action_just_pressed("ui_accept"):
-		print("reset!")
 		position = start_position
 		velocity = Vector3.ZERO
 		
@@ -76,6 +76,9 @@ func _unhandled_input(_event: InputEvent) -> void:
 	
 	if Input.is_action_just_pressed("spawn_mob"):
 		spawn_mob.rpc(mouse_position)
+	
+	if Input.is_action_just_pressed("swap_weapon"):
+		swap_weapon.rpc()
 
 
 func _ready():
@@ -102,3 +105,9 @@ func set_color(new_color: Color):
 
 func set_player_name(new_name: String):
 	name_label.text = new_name
+
+
+@rpc("call_local")
+func swap_weapon():
+	gun_controller.swap.rpc()
+	swapped_weapon.emit()
