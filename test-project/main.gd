@@ -37,6 +37,7 @@ func add_player(peer_id):
 	if player.is_multiplayer_authority():
 		player.set_color.rpc(color_rect.color)
 		player.spawned_mob.connect(spawn_mob)
+		player.swapped_weapon.connect(player_swapped_weapon)
 
 
 func _on_host_button_pressed():
@@ -54,8 +55,8 @@ func _on_join_button_pressed():
 		return
 	main_menu.hide()
 	
-	enet_peer.create_client(address_edit.text, PORT)
-#	enet_peer.create_client("localhost", PORT)
+#	enet_peer.create_client(address_edit.text, PORT)
+	enet_peer.create_client("localhost", PORT)
 	multiplayer.multiplayer_peer = enet_peer
 
 
@@ -83,12 +84,26 @@ func spawn_mob(mob_position):
 		return
 	create_enemy(mob_position)
 
+@rpc("any_peer")
+func swap_weapon():
+	print(get_multiplayer_authority(), " swap_weapon")
+
+func inner_swap_weapon():
+	print(get_multiplayer_authority(), " inner_swap_weapon")
+
+func player_swapped_weapon():
+	if not is_multiplayer_authority():
+		swap_weapon.rpc()
+		return
+	inner_swap_weapon()
+
 
 func _on_players_spawner_spawned(player: Player) -> void:
 	if player.is_multiplayer_authority():
 		player.set_color.rpc(color_rect.color)
 		player.set_player_name(name_edit.text)
 		player.spawned_mob.connect(spawn_mob)
+		player.swapped_weapon.connect(player_swapped_weapon)
 
 
 func _on_color_rect_gui_input(event: InputEvent) -> void:
