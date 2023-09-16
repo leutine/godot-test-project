@@ -53,75 +53,6 @@ use_collision = true
 collision_mask = 0
 material = SubResource("StandardMaterial3D_544fh")
 
-[node name="UI" type="CanvasLayer" parent="."]
-
-[node name="MainMenu" type="PanelContainer" parent="UI"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -329.0
-offset_top = -162.0
-offset_right = 328.0
-offset_bottom = 162.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 0
-
-[node name="MarginContainer" type="MarginContainer" parent="UI/MainMenu"]
-layout_mode = 2
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 15
-theme_override_constants/margin_bottom = 15
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/MainMenu/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 15
-
-[node name="TitleLabel" type="Label" parent="UI/MainMenu/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Main Menu"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/MainMenu/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 15
-
-[node name="NameEdit" type="LineEdit" parent="UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-size_flags_stretch_ratio = 10.0
-placeholder_text = "Player name"
-alignment = 1
-max_length = 20
-
-[node name="ColorRect" type="ColorRect" parent="UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 10.0
-color = Color(0, 0.568627, 0.572549, 1)
-
-[node name="HSeparator" type="HSeparator" parent="UI/MainMenu/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="HostButton" type="Button" parent="UI/MainMenu/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Host"
-
-[node name="AddressEdit" type="LineEdit" parent="UI/MainMenu/MarginContainer/VBoxContainer"]
-layout_mode = 2
-placeholder_text = "Address to join"
-alignment = 1
-
-[node name="JoinButton" type="Button" parent="UI/MainMenu/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Join"
-
 [node name="PlayersSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://player.tscn")
 spawn_path = NodePath("../Players")
@@ -136,7 +67,21 @@ spawn_limit = 20
 
 [node name="Players" type="Node" parent="."]
 
-[connection signal="gui_input" from="UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/ColorRect" to="." method="_on_color_rect_gui_input"]
-[connection signal="pressed" from="UI/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
-[connection signal="pressed" from="UI/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
+[node name="PlayerSpawnPoint" type="Node3D" parent="."]
+
+[node name="0" type="Node3D" parent="PlayerSpawnPoint" groups=["PlayerSpawnPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.154, 0, 7.114)
+
+[node name="1" type="Node3D" parent="PlayerSpawnPoint" groups=["PlayerSpawnPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.477, 0, 6.05)
+
+[node name="2" type="Node3D" parent="PlayerSpawnPoint" groups=["PlayerSpawnPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.92, 0, -1.643)
+
+[node name="3" type="Node3D" parent="PlayerSpawnPoint" groups=["PlayerSpawnPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.995, 0, 2.919)
+
+[node name="4" type="Node3D" parent="PlayerSpawnPoint" groups=["PlayerSpawnPoint"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.8556, 0, 3.87449)
+
 [connection signal="spawned" from="PlayersSpawner" to="." method="_on_players_spawner_spawned"]

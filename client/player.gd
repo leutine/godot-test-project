@@ -17,10 +17,9 @@ class_name Player
 
 @onready var material: StandardMaterial3D = StandardMaterial3D.new()
 var default_collision_mask = collision_mask
-
+var sync_delta
 
 signal spawned_mob
-signal swapped_weapon
 
 
 func get_mouse_position():
@@ -38,6 +37,7 @@ func get_mouse_position():
 
 func _physics_process(delta):
 	if not is_multiplayer_authority(): return
+	sync_delta = delta
 	var mouse_position: Vector3 = get_mouse_position()
 	if global_transform.origin != mouse_position:
 		look_at(mouse_position, Vector3.UP)
@@ -57,7 +57,13 @@ func _physics_process(delta):
 	move_and_slide()
 	collision_mask = default_collision_mask
 	if Input.is_action_pressed("primary_action"):
-		gun_controller.shoot.rpc()
+#		gun_controller.shoot()
+		shoot.rpc()
+
+#@rpc("any_peer", "call_local", "unreliable")
+#func update_position(id, pos):
+#	if not is_multiplayer_authority() and name == id:
+#		position = lerp(position, pos, sync_delta * 15)
 
 
 @rpc("call_local")
@@ -88,7 +94,7 @@ func _ready():
 
 
 func _enter_tree() -> void:
-	set_multiplayer_authority(str(name).to_int())
+	set_multiplayer_authority(name.to_int())
 
 
 @rpc("call_local")
@@ -96,7 +102,6 @@ func spawn_mob(mob_position):
 	spawned_mob.emit(mob_position)
 
 
-@rpc("call_local")
 func set_color(new_color: Color):
 	color = new_color
 	material.albedo_color = color
@@ -109,5 +114,16 @@ func set_player_name(new_name: String):
 
 @rpc("call_local")
 func swap_weapon():
-	gun_controller.swap.rpc()
-	swapped_weapon.emit()
+#	if not is_multiplayer_authority(): return
+	gun_controller.swap()
+
+
+@rpc("call_local")
+func shoot():
+#	if not is_multiplayer_authority(): return
+	gun_controller.shoot()
+
+
+#func _on_timer_timeout() -> void:
+#	if is_multiplayer_authority():
+#		update_position.rpc(name, position)

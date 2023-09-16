@@ -10,11 +10,15 @@ config_version=5
 
 [application]
 
-config/name="godot-test-project"
-run/main_scene="res://main.tscn"
+config/name="godot-test-project-client"
+run/main_scene="res://main_menu.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 boot_splash/show_image=false
 config/icon="res://icon.svg"
+
+[autoload]
+
+MultiplayerManager="*res://mp_manager.gd"
 
 [editor]
 

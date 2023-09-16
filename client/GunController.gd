@@ -18,13 +18,11 @@ func equip_weapon(weapon: PackedScene):
 	hand.add_child(equipped_weapon)
 
 
-@rpc("call_local")
 func shoot():
 	if equipped_weapon:
 		equipped_weapon.shoot()
 
 
-@rpc("call_local")
 func swap():
 	var next_weapon = (current_weapon + 1) % weapons.size()
 	equip_weapon(weapons[next_weapon])

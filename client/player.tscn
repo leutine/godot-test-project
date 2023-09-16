@@ -18,30 +18,26 @@ size = Vector3(0.8, 0.3, 0.5)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3oy5u"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_doaly"]
-properties/0/path = NodePath(".:position")
+properties/0/path = NodePath(".:rotation")
 properties/0/spawn = true
 properties/0/sync = true
 properties/0/watch = false
-properties/1/path = NodePath(".:rotation")
+properties/1/path = NodePath("NameLabel:text")
 properties/1/spawn = true
-properties/1/sync = true
+properties/1/sync = false
 properties/1/watch = false
-properties/2/path = NodePath("Mesh:rotation")
+properties/2/path = NodePath(".:material")
 properties/2/spawn = true
-properties/2/sync = true
+properties/2/sync = false
 properties/2/watch = false
-properties/3/path = NodePath("NameLabel:text")
+properties/3/path = NodePath(".:color")
 properties/3/spawn = true
-properties/3/sync = true
+properties/3/sync = false
 properties/3/watch = false
-properties/4/path = NodePath(".:material")
+properties/4/path = NodePath(".:position")
 properties/4/spawn = true
 properties/4/sync = true
 properties/4/watch = false
-properties/5/path = NodePath(".:color")
-properties/5/spawn = true
-properties/5/sync = true
-properties/5/watch = false
 
 [node name="Player" type="CharacterBody3D" groups=["players"]]
 collision_layer = 2
@@ -78,6 +74,12 @@ font_size = 100
 outline_size = 20
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_interval = 0.02
 replication_config = SubResource("SceneReplicationConfig_doaly")
 
 [node name="Dodge" parent="." instance=ExtResource("4_7ic7g")]
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.03
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
