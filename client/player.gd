@@ -14,6 +14,7 @@ class_name Player
 @onready var body: MeshInstance3D = $Mesh/Body
 @onready var name_label: Label3D = $NameLabel
 @onready var dodge = $Dodge
+@onready var mp_sync: MultiplayerSynchronizer = $MultiplayerSynchronizer
 
 @onready var material: StandardMaterial3D = StandardMaterial3D.new()
 var default_collision_mask = collision_mask
@@ -41,7 +42,7 @@ func _physics_process(delta):
 	var mouse_position: Vector3 = get_mouse_position()
 	if global_transform.origin != mouse_position:
 		look_at(mouse_position, Vector3.UP)
-	
+
 	var move_direction2: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	var move_direction3: Vector3 = Vector3(move_direction2.x, 0, move_direction2.y)
 	move_direction3 = move_direction3.normalized()

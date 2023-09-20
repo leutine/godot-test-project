@@ -5,7 +5,7 @@ var name: String = "Player"
 var color: Color = Color.BLACK
 
 
-func dict() -> Dictionary:
+func to_dict() -> Dictionary:
 	return {"id": id, "name": name, "color": color}
 
 

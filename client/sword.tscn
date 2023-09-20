@@ -34,7 +34,8 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_8vlfy"]
 resource_name = "shoot"
-length = 0.3
+length = 0.15
+step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -42,10 +43,10 @@ tracks/0/path = NodePath("Pivot:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0, 0.15),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector3(0, 0, 0), Vector3(1.5708, 0, 0), Vector3(0, 0, 0)]
+"values": [Vector3(2.13175e-15, -2.60511, -1.5708), Vector3(-2.40776e-15, -0.537684, -1.5708)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8yecn"]
@@ -58,12 +59,13 @@ _data = {
 script = ExtResource("1_merf0")
 
 [node name="Pivot" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Body" type="Node3D" parent="Pivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.74382, 0)
 
 [node name="Blade" type="MeshInstance3D" parent="Pivot/Body"]
-transform = Transform3D(0.5, 0, 0, 0, 2, 0, 0, 0, 0.5, 0, 0, 0)
+transform = Transform3D(0.25, 0, 0, 0, 2, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = SubResource("BoxMesh_nuwc0")
 surface_material_override/0 = SubResource("StandardMaterial3D_iuk5q")
 script = ExtResource("2_3bkwf")
@@ -78,7 +80,7 @@ transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
 shape = SubResource("BoxShape3D_u4xo2")
 
 [node name="Handle" type="MeshInstance3D" parent="Pivot/Body"]
-transform = Transform3D(0.5, 0, 0, 0, 0.7, 0, 0, 0, 0.5, 0, -1.34744, 0)
+transform = Transform3D(0.25, 0, 0, 0, 0.7, 0, 0, 0, 0.25, 0, -1.34744, 0)
 mesh = SubResource("BoxMesh_huc6h")
 surface_material_override/0 = SubResource("StandardMaterial3D_fx8l0")
 

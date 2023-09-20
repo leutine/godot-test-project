@@ -25,3 +25,4 @@ func shoot():
 
 func _on_timer_timeout():
 	can_shoot = true
+	anim_player.play("RESET")
