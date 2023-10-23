@@ -2,10 +2,9 @@ name: Build Godot Project
 
 on:
   push: {}
-  pull_request: {}
 
 env:
-  GODOT_VERSION: 4.1.2
+  GODOT_VERSION: 4.1.1
   EXPORT_NAME: test-project
   PROJECT_PATH: test-project
   
