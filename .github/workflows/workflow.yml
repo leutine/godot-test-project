@@ -35,7 +35,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: windows
+          name: windows-client
           path: build/windows
   export-windows-server:
     name: Windows Server Export
@@ -63,5 +63,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: windows
+          name: windows-server
           path: build/windows
