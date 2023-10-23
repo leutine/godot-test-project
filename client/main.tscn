@@ -73,6 +73,30 @@ text = "Join"
 layout_mode = 2
 text = "Start"
 
+[node name="YouDiedLabel" type="Label" parent="UI"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -56.0
+offset_top = -15.0
+offset_right = 56.0
+offset_bottom = 17.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(56, 16)
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "Lol you ded"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Players" type="Node" parent="."]
+
+[node name="Enemies" type="Node" parent="."]
+
 [connection signal="gui_input" from="UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/ColorRect" to="." method="_on_color_rect_gui_input"]
 [connection signal="button_down" from="UI/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_button_down"]
 [connection signal="button_down" from="UI/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_button_down"]

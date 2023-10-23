@@ -11,6 +11,8 @@ albedo_color = Color(0.509804, 0.176471, 0.176471, 1)
 resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_3415e")
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8f014"]
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4onvx"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_k6ckn"]
@@ -30,7 +32,7 @@ step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("MeshInstance3D:mesh:material:albedo_color")
+tracks/0/path = NodePath("Pivot/MeshInstance3D:mesh:material:albedo_color")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -45,16 +47,25 @@ _data = {
 "take_hit": SubResource("Animation_u8ijr")
 }
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8f014"]
-
 [node name="Enemy" type="CharacterBody3D" groups=["enemies"]]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_ht8c7")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Pivot" type="Marker3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("CapsuleMesh_ja5dd")
+skeleton = NodePath("../..")
+
+[node name="Hurtbox" type="Area3D" parent="Pivot"]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pivot/Hurtbox"]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_8f014")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -76,14 +87,6 @@ libraries = {
 "": SubResource("AnimationLibrary_v0rsl")
 }
 
-[node name="Hurtbox" type="Area3D" parent="."]
-collision_layer = 4
-collision_mask = 2
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 1, 0)
-shape = SubResource("CapsuleShape3D_8f014")
-
+[connection signal="area_entered" from="Pivot/Hurtbox" to="." method="_on_hurtbox_area_entered"]
 [connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
 [connection signal="died_signal" from="Stats" to="." method="_on_stats_died_signal"]
-[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]

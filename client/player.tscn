@@ -18,34 +18,36 @@ size = Vector3(0.8, 0.3, 0.5)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3oy5u"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_doaly"]
-properties/0/path = NodePath(".:rotation")
+properties/0/path = NodePath("NameLabel:text")
 properties/0/spawn = false
-properties/0/sync = true
+properties/0/sync = false
 properties/0/watch = false
-properties/1/path = NodePath("NameLabel:text")
+properties/1/path = NodePath(".:material")
 properties/1/spawn = false
 properties/1/sync = false
 properties/1/watch = false
-properties/2/path = NodePath(".:material")
+properties/2/path = NodePath(".:color")
 properties/2/spawn = false
 properties/2/sync = false
 properties/2/watch = false
-properties/3/path = NodePath(".:color")
+properties/3/path = NodePath(".:position")
 properties/3/spawn = false
-properties/3/sync = false
+properties/3/sync = true
 properties/3/watch = false
-properties/4/path = NodePath(".:position")
+properties/4/path = NodePath("Mesh:rotation")
 properties/4/spawn = false
 properties/4/sync = true
 properties/4/watch = false
 
 [node name="Player" type="CharacterBody3D" groups=["players"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_ar8oh")
+move_speed = 10.0
+dodge_speed = 100.0
 
 [node name="Mesh" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="Body" type="MeshInstance3D" parent="Mesh"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
@@ -53,7 +55,7 @@ mesh = SubResource("CapsuleMesh_5q03q")
 skeleton = NodePath("../..")
 
 [node name="Hand" type="Marker3D" parent="Mesh/Body"]
-transform = Transform3D(0.999925, 0, 0.012217, 0, 1, 0, -0.012217, 0, 0.999925, -0.665665, 0.0199442, 0.238044)
+transform = Transform3D(0.973896, 0, 0.226991, 0, 1, 0, -0.226991, 0, 0.973896, -0.665665, 0.0199442, 0.238044)
 
 [node name="Eyes" type="MeshInstance3D" parent="Mesh/Body"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.452195, 0.307981)
@@ -61,7 +63,6 @@ mesh = SubResource("BoxMesh_6658s")
 skeleton = NodePath("../../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_3oy5u")
 
 [node name="GunController" type="Node" parent="."]
@@ -69,7 +70,7 @@ script = ExtResource("2_8nl12")
 weapons = Array[PackedScene]([ExtResource("4_a8la2"), ExtResource("3_dcl53")])
 
 [node name="NameLabel" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.518579, 0.85503, 0, -0.85503, 0.518579, 0, 2.23991, 0)
+transform = Transform3D(1, 0, 0, 0, 0.518579, 0.85503, 0, -0.85503, 0.518579, 0, 1.5, 0)
 font_size = 100
 outline_size = 20
 
@@ -80,7 +81,10 @@ public_visibility = false
 
 [node name="Dodge" parent="." instance=ExtResource("4_7ic7g")]
 
-[node name="Timer" type="Timer" parent="."]
-wait_time = 0.03
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, 0, 0, 0)
+top_level = true
 
-[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 25)
+fov = 80.0

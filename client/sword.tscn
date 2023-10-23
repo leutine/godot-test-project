@@ -59,7 +59,6 @@ _data = {
 script = ExtResource("1_merf0")
 
 [node name="Pivot" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Body" type="Node3D" parent="Pivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.74382, 0)

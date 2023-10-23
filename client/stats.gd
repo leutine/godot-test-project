@@ -4,7 +4,7 @@ class_name Stats
 
 signal died_signal
 
-@export var max_hp = 10
+@export var max_hp = 20
 
 var current_hp = max_hp
 

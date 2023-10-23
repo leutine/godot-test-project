@@ -20,6 +20,9 @@ func _physics_process(_delta):
 func update_target_location(loc):
 	nav_agent.set_target_position(loc)
 
+func reset_rotation():
+	$Pivot.rotation = Vector3.ZERO
+
 
 func _on_navigation_agent_3d_velocity_computed(safe_velocity):
 	velocity = velocity.move_toward(safe_velocity, 0.25)
@@ -36,4 +39,9 @@ func _on_hurtbox_area_entered(area: Area3D) -> void:
 	var damage = 0
 	damage = parent.damage
 	anim_player.play("take_hit")
+	
+	var tween = create_tween().set_loops(1)
+	tween.tween_property($Pivot, "rotation", Vector3(0, 0, 1.0), 0.15)
+	tween.tween_callback(reset_rotation)
+	
 	stats.take_hit(damage)

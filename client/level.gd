@@ -10,6 +10,15 @@ const Enemy = preload("res://enemy.tscn")
 @onready var spawn_points = $PlayerSpawnPoint
 @onready var enemy_spawn_points = $EnemiesSpawnPoint
 
+
+#func _ready() -> void:
+#	camera.set_multiplayer_authority(multiplayer.get_unique_id())
+
+#func _process(delta: float) -> void:
+#	var players = get_tree().get_nodes_in_group("players")
+#	var current_player = players
+#	camera.position = get_tree().get_nodes_in_group("players")
+
 #func get_new_player(player_info: PlayerInfo) -> Player:
 #	var new_player = Player.instantiate()
 #	new_player.name = str(player_info.id)
@@ -152,3 +161,9 @@ func _on_enemy_spawn_timer_timeout() -> void:
 		if i.get_child_count() == 0:
 			var enemy = Enemy.instantiate()
 			i.add_child(enemy)
+
+
+func _on_void_body_entered(body: Node3D) -> void:
+	body.die()
+
+

@@ -1,4 +1,5 @@
 extends Node
+class_name Dodge
 
 const dash_delay = 3.0
 
@@ -16,15 +17,15 @@ func start_dash(duration):
 
 
 func is_dashing():
-	return !duration_timer.is_stopped()	
+	return !duration_timer.is_stopped()
 
 
 func end_dash():
 	can_dash = false
 	await get_tree().create_timer(dash_delay).timeout
-	print("dash timeout!")
 	can_dash = true
 
 
 func _on_DurationTimer_timeout() -> void:
+	print_debug("dash timeout!")
 	end_dash()
