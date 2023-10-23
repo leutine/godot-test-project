@@ -30,6 +30,7 @@ jobs:
       - name: Windows Debug Build
         run: |
           mkdir -v -p build/windows
+          ls -la
           cd $PROJECT_PATH/client
           godot -v --headless --export-debug "Windows Desktop Client" ../build/windows/$EXPORT_NAME-client.exe
       - name: Upload Artifact
