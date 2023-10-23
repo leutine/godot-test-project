@@ -5,16 +5,16 @@ on:
   pull_request: {}
 
 env:
-  GODOT_VERSION: 4.0.2
+  GODOT_VERSION: 4.1.2
   EXPORT_NAME: test-project
   PROJECT_PATH: test-project
   
 jobs:
-  export-windows:
-    name: Windows Export
+  export-windows-client:
+    name: Windows Client Export
     runs-on: ubuntu-20.04
     container:
-      image: srynetix/godot-ci:4.0.2
+      image: barichello/godot-ci:4.1.1
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -31,8 +31,36 @@ jobs:
       - name: Windows Debug Build
         run: |
           mkdir -v -p build/windows
-          cd $PROJECT_PATH
-          godot -v --headless --export-debug "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
+          cd $PROJECT_PATH/client
+          godot -v --headless --export-debug "Windows Desktop Client" ../build/windows/$EXPORT_NAME-client.exe
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: windows
+          path: build/windows
+  export-windows-server:
+    name: Windows Server Export
+    runs-on: ubuntu-20.04
+    container:
+      image: barichello/godot-ci:4.1.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          submodules: recursive
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/templates
+          mkdir -v -p ~/.config/godot
+          ln -sv ~/.local/share/godot/templates ~/.local/share/godot/export_templates
+          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+          cp -v /root/.config/godot/editor_settings-4.tres ~/.config/godot/editor_settings-4.tres
+      - name: Windows Debug Build
+        run: |
+          mkdir -v -p build/windows
+          cd $PROJECT_PATH/server
+          godot -v --headless --export-debug "Windows Desktop Server" ../build/windows/$EXPORT_NAME-server.exe
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
