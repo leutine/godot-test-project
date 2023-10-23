@@ -30,8 +30,7 @@ jobs:
       - name: Windows Debug Build
         run: |
           mkdir -v -p build/windows
-          ls -la
-          cd $PROJECT_PATH/client
+          cd client
           godot -v --headless --export-debug "Windows Desktop Client" ../build/windows/$EXPORT_NAME-client.exe
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
@@ -59,7 +58,7 @@ jobs:
       - name: Windows Debug Build
         run: |
           mkdir -v -p build/windows
-          cd $PROJECT_PATH/server
+          cd server
           godot -v --headless --export-debug "Windows Desktop Server" ../build/windows/$EXPORT_NAME-server.exe
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
