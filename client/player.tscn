@@ -1,10 +1,15 @@
-[gd_scene load_steps=11 format=3 uid="uid://co5plf8mt2t47"]
+[gd_scene load_steps=12 format=3 uid="uid://co5plf8mt2t47"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_ar8oh"]
 [ext_resource type="Script" path="res://GunController.gd" id="2_8nl12"]
+[ext_resource type="PackedScene" uid="uid://d3ws4dogdrw4c" path="res://assets/models/mixamo_base.glb" id="2_i52va"]
 [ext_resource type="PackedScene" uid="uid://dgajcf43paht0" path="res://sword.tscn" id="3_dcl53"]
 [ext_resource type="PackedScene" uid="uid://b5bjduqwda6j3" path="res://dodge.tscn" id="4_7ic7g"]
 [ext_resource type="PackedScene" uid="uid://7c03sqbjd8vg" path="res://gun.tscn" id="4_a8la2"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3oy5u"]
+radius = 0.3
+height = 1.8
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_5q03q"]
 
@@ -15,39 +20,40 @@ albedo_color = Color(0.52549, 1, 0.172549, 1)
 material = SubResource("StandardMaterial3D_7pa5p")
 size = Vector3(0.8, 0.3, 0.5)
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3oy5u"]
-
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_doaly"]
 properties/0/path = NodePath("NameLabel:text")
 properties/0/spawn = false
-properties/0/sync = false
-properties/0/watch = false
+properties/0/replication_mode = 0
 properties/1/path = NodePath(".:material")
 properties/1/spawn = false
-properties/1/sync = false
-properties/1/watch = false
+properties/1/replication_mode = 0
 properties/2/path = NodePath(".:color")
 properties/2/spawn = false
-properties/2/sync = false
-properties/2/watch = false
+properties/2/replication_mode = 0
 properties/3/path = NodePath(".:position")
 properties/3/spawn = false
-properties/3/sync = true
-properties/3/watch = false
+properties/3/replication_mode = 1
 properties/4/path = NodePath("Mesh:rotation")
 properties/4/spawn = false
-properties/4/sync = true
-properties/4/watch = false
+properties/4/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D" groups=["players"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_ar8oh")
-move_speed = 10.0
 dodge_speed = 100.0
 
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_3oy5u")
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="mixamo_base" parent="Model" instance=ExtResource("2_i52va")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+
 [node name="Mesh" type="Marker3D" parent="."]
+visible = false
 
 [node name="Body" type="MeshInstance3D" parent="Mesh"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
@@ -61,9 +67,6 @@ transform = Transform3D(0.973896, 0, 0.226991, 0, 1, 0, -0.226991, 0, 0.973896, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.452195, 0.307981)
 mesh = SubResource("BoxMesh_6658s")
 skeleton = NodePath("../../..")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("CapsuleShape3D_3oy5u")
 
 [node name="GunController" type="Node" parent="."]
 script = ExtResource("2_8nl12")
@@ -81,10 +84,10 @@ public_visibility = false
 
 [node name="Dodge" parent="." instance=ExtResource("4_7ic7g")]
 
-[node name="CameraPivot" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, 0, 0, 0)
-top_level = true
+[node name="CameraOrigin" type="Node3D" parent="."]
 
-[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 25)
-fov = 80.0
+[node name="CameraArm" type="SpringArm3D" parent="CameraOrigin"]
+transform = Transform3D(1, 0, 0, 0, 0.965925, 0.258819, 0, -0.258819, 0.965925, 1.5, 2, 2)
+margin = 0.3
+
+[node name="Camera3D" type="Camera3D" parent="CameraOrigin/CameraArm"]

@@ -1,14 +1,18 @@
 extends CharacterBody3D
 class_name Player
 
-@export var move_speed = 1000.0
-@export var teleport_distance = 5.0
+const SPEED = 5.0
+const JUMP_VELOCITY = 4.5
+
+# Get the gravity from the project settings to be synced with RigidBody nodes.
+var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+
+#@export var teleport_distance = 5.0
 @export var dodge_speed = 4000.0
 @export var dodge_duration = 0.1
 @export var name_label_text = "Player"
 @export var color = Color.BLACK
 @export var camera_zoom_step = 2
-@export var gravity = 10
 
 @onready var start_position = position
 @onready var gun_controller = $GunController
@@ -17,8 +21,9 @@ class_name Player
 @onready var name_label: Label3D = $NameLabel
 @onready var dodge: Dodge = $Dodge
 @onready var mp_sync: MultiplayerSynchronizer = $MultiplayerSynchronizer
-@onready var camera_pivot: Node3D = $CameraPivot
-@onready var camera: Camera3D = $CameraPivot/Camera3D
+@onready var camera_origin: Node3D = $CameraOrigin
+@onready var camera_arm: Node3D = $CameraOrigin/CameraArm
+@onready var camera: Camera3D = $CameraOrigin/CameraArm/Camera3D
 @onready var hand: Marker3D = $Mesh/Body/Hand
 
 @onready var material: StandardMaterial3D = StandardMaterial3D.new()
@@ -27,6 +32,7 @@ var sync_delta
 var move_direction3
 var default_camera_zoom
 var fall_speed = 0
+const MOUSE_SENSITIVITY = 0.3
 
 signal spawned_mob
 signal died(player)
@@ -44,34 +50,36 @@ func get_mouse_position():
 	return target
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
-	var mouse_position: Vector3 = get_mouse_position()
-	if global_transform.origin != mouse_position:
-		pivot.look_at(mouse_position, Vector3.UP)
-		hand.look_at(mouse_position, Vector3.UP, true)
-#	if Input.is_action_pressed("primary_action"):
-#		shoot.rpc()
+	# Add the gravity.
+	if not is_on_floor():
+		velocity.y -= gravity * delta
 
-	camera_pivot.global_position = camera_pivot.global_position.lerp(global_position, delta * 10)
+	# Handle jump.
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
 
-
-func _physics_process(_delta):
-	fall_speed = 0
-	if not is_multiplayer_authority(): return
-	var move_direction2: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
-	var move_direction3: Vector3 = Vector3(move_direction2.x, 0, move_direction2.y)
+	# Get the input direction and handle the movement/deceleration.
+	# As good practice, you should replace UI actions with custom gameplay actions.
+	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	
+	# Dash
 	if Input.is_action_just_pressed("dodge") and !dodge.is_dashing() and dodge.can_dash:
-#		teleport.rpc(move_direction3)
 		dodge.start_dash(dodge_duration)
-
 	if dodge.is_dashing():
 		set_collision_mask_value(3, false)
+
+	var speed = dodge_speed if dodge.is_dashing() else SPEED
 	
-	var speed = dodge_speed if dodge.is_dashing() else move_speed
-	velocity = move_direction3 * speed
-	fall_speed -= gravity
-	velocity.y = fall_speed
+	if direction:
+		velocity.x = direction.x * SPEED
+		velocity.z = direction.z * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+		velocity.z = move_toward(velocity.z, 0, SPEED)
+
 	move_and_slide()
 	collision_mask = default_collision_mask
 
@@ -82,10 +90,10 @@ func _physics_process(_delta):
 #		position = lerp(position, pos, sync_delta * 15)
 
 
-@rpc("call_local")
-func teleport(direction):
-	position = position + (direction * teleport_distance)
-	velocity = Vector3.ZERO
+#@rpc("call_local")
+#func teleport(direction):
+	#position = position + (direction * teleport_distance)
+	#velocity = Vector3.ZERO
 
 
 func _unhandled_input(_event: InputEvent) -> void:
@@ -114,6 +122,13 @@ func _unhandled_input(_event: InputEvent) -> void:
 		shoot.rpc()
 
 
+func _input(event):
+	if event is InputEventMouseMotion:
+		rotate_y(deg_to_rad(-event.relative.x * MOUSE_SENSITIVITY))
+		camera_origin.rotate_x(deg_to_rad(-event.relative.y * MOUSE_SENSITIVITY))
+		camera_origin.rotation.x = clamp(camera_origin.rotation.x, deg_to_rad(-90), deg_to_rad(45))
+
+
 func camera_zoom(multiplier: float):
 	camera.position.z = camera.position.z + multiplier 
 	
@@ -123,7 +138,8 @@ func _ready():
 	material.albedo_color = color
 	body.material_override = material
 	if not is_multiplayer_authority(): return
-	camera_pivot.set_as_top_level(true)
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	#camera_arm.set_as_top_level(true)
 	camera.current = true
 	default_camera_zoom = camera.position.z
 
