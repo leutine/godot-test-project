@@ -4,7 +4,7 @@ extends Node
 const ADDRESS = "localhost"
 const PORT = 8910
 
-const Player = preload("res://player.tscn")
+const Player = preload("res://scenes/player.tscn")
 #const Enemy = preload("res://enemy.tscn")
 #const PORT = 9999
 #const SPAWN_RANDOM := 5.0

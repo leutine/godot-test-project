@@ -1,28 +1,93 @@
-[gd_scene load_steps=4 format=3 uid="uid://be06e6uv1317"]
+[gd_scene load_steps=12 format=3 uid="uid://co5plf8mt2t47"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_kvr5b"]
 [ext_resource type="PackedScene" uid="uid://d3ws4dogdrw4c" path="res://assets/models/mixamo_base.glb" id="1_ykaam"]
+[ext_resource type="Script" path="res://GunController.gd" id="3_nucn3"]
+[ext_resource type="PackedScene" uid="uid://7c03sqbjd8vg" path="res://gun.tscn" id="4_3i5dw"]
+[ext_resource type="PackedScene" uid="uid://dgajcf43paht0" path="res://sword.tscn" id="5_lvpwe"]
+[ext_resource type="PackedScene" uid="uid://b5bjduqwda6j3" path="res://dodge.tscn" id="6_r6ptd"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_uofyo"]
-radius = 0.35
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3oy5u"]
+radius = 0.3
 height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_5q03q"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7pa5p"]
+albedo_color = Color(0.52549, 1, 0.172549, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_6658s"]
+material = SubResource("StandardMaterial3D_7pa5p")
+size = Vector3(0.8, 0.3, 0.5)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_doaly"]
+properties/0/path = NodePath("NameLabel:text")
+properties/0/spawn = false
+properties/0/replication_mode = 0
+properties/1/path = NodePath(".:material")
+properties/1/spawn = false
+properties/1/replication_mode = 0
+properties/2/path = NodePath(".:color")
+properties/2/spawn = false
+properties/2/replication_mode = 0
+properties/3/path = NodePath(".:position")
+properties/3/spawn = false
+properties/3/replication_mode = 1
+properties/4/path = NodePath("Mesh:rotation")
+properties/4/spawn = false
+properties/4/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D" groups=["players"]]
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_kvr5b")
+dodge_speed = 100.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-shape = SubResource("CapsuleShape3D_uofyo")
+shape = SubResource("CapsuleShape3D_3oy5u")
 
 [node name="Model" type="Node3D" parent="."]
 
 [node name="mixamo_base" parent="Model" instance=ExtResource("1_ykaam")]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="Mesh" type="Marker3D" parent="."]
+visible = false
+
+[node name="Body" type="MeshInstance3D" parent="Mesh"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_5q03q")
+skeleton = NodePath("../..")
+
+[node name="Hand" type="Marker3D" parent="Mesh/Body"]
+transform = Transform3D(0.973896, 0, 0.226991, 0, 1, 0, -0.226991, 0, 0.973896, -0.665665, 0.0199442, 0.238044)
+
+[node name="Eyes" type="MeshInstance3D" parent="Mesh/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.452195, 0.307981)
+mesh = SubResource("BoxMesh_6658s")
+skeleton = NodePath("../../..")
+
+[node name="GunController" type="Node" parent="."]
+script = ExtResource("3_nucn3")
+weapons = Array[PackedScene]([ExtResource("4_3i5dw"), ExtResource("5_lvpwe")])
+
+[node name="NameLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.518579, 0.85503, 0, -0.85503, 0.518579, 0, 1.5, 0)
+font_size = 100
+outline_size = 20
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_interval = 0.02
+replication_config = SubResource("SceneReplicationConfig_doaly")
+public_visibility = false
+
+[node name="Dodge" parent="." instance=ExtResource("6_r6ptd")]
 
 [node name="CameraOrigin" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.40869, 0)
 
-[node name="Camera3D" type="Camera3D" parent="CameraOrigin"]
-transform = Transform3D(1, 0, 0, 0, 0.984589, 0.174886, 0, -0.174886, 0.984589, 1.07208, 0.949134, 3.05963)
+[node name="CameraArm" type="SpringArm3D" parent="CameraOrigin"]
+transform = Transform3D(1, 0, 0, 0, 0.965925, 0.258819, 0, -0.258819, 0.965925, 1.5, 2, 2)
+margin = 0.3
+
+[node name="Camera3D" type="Camera3D" parent="CameraOrigin/CameraArm"]
