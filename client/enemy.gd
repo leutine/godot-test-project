@@ -33,11 +33,7 @@ func _on_stats_died_signal():
 	queue_free()
 
 
-# TODO: добывать урон не через родителя ареа3д (чтобы было универсально)
-func _on_hurtbox_area_entered(area: Area3D) -> void:
-	var parent = area.get_parent_node_3d()
-	var damage = 0
-	damage = parent.damage
+func get_hit(damage: int) -> void:
 	anim_player.play("take_hit")
 	
 	var tween = create_tween().set_loops(1)
@@ -45,3 +41,8 @@ func _on_hurtbox_area_entered(area: Area3D) -> void:
 	tween.tween_callback(reset_rotation)
 	
 	stats.take_hit(damage)
+
+# TODO: добывать урон не через родителя ареа3д (чтобы было универсально)
+func _on_hurtbox_area_entered(area: Area3D) -> void:
+	var parent = area.get_parent_node_3d()
+	get_hit(parent.damage)
