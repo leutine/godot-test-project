@@ -37,16 +37,15 @@ func get_player_info() -> PlayerInfo:
 	player_info.color = color_rect.color
 	return player_info
 
-func sync_players() -> void:
-	for p_id in Server.players:
-		sync_player(p_id)
 
 func sync_player(player_id: int) -> void:
-	if player_id != multiplayer.get_unique_id():
-		client_ready_to_sync.rpc(multiplayer.get_unique_id())
-	for p in get_tree().get_nodes_in_group("players"):
-		if player_id != multiplayer.get_unique_id():
-			p.mp_sync.set_visibility_for(player_id, true)
+	for p_id in Server.players:
+		if p_id != multiplayer.get_unique_id():
+			client_ready_to_sync.rpc(multiplayer.get_unique_id())
+		for p in get_tree().get_nodes_in_group("players"):
+			p.died.connect(_on_player_died)
+			if p_id != multiplayer.get_unique_id():
+				p.mp_sync.set_visibility_for(p_id, true)
 
 
 func get_new_player(player_info: PlayerInfo) -> Player:
@@ -60,10 +59,8 @@ func add_new_player_to_scene(player_id: int) -> Player:
 	var player_info = Server.players[player_id]
 	var new_player = get_new_player(player_info)
 	players.add_child(new_player)
-	sync_player(player_id)
 	var spawn_points = get_tree().get_nodes_in_group("PlayerSpawnPoint")
 	new_player.global_position = spawn_points.pick_random().global_position
-	new_player.died.connect(_on_player_died)
 	return new_player
 
 
@@ -100,7 +97,12 @@ func start_game():
 	main_menu.hide()
 	prepare_level()
 	for p_id in Server.players:
-		sync_player(p_id)
+		if p_id != multiplayer.get_unique_id():
+			client_ready_to_sync.rpc(multiplayer.get_unique_id())
+		for p in get_tree().get_nodes_in_group("players"):
+			p.died.connect(_on_player_died)
+			if p_id != multiplayer.get_unique_id():
+				p.mp_sync.set_visibility_for(p_id, true)
 #	print_players_sync()
 
 

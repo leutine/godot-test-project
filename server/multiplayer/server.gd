@@ -14,7 +14,11 @@ func convert_players():
 	return result
 
 
-@rpc("any_peer", "call_remote", "reliable") 
+func _ready() -> void:
+	host_game()
+
+
+@rpc("any_peer", "call_remote", "reliable")
 func server_send_player_info(data: Dictionary) -> void:
 	var player_info = PlayerInfo.from_dict(data)
 	print(player_info.to_dict())
@@ -34,10 +38,6 @@ func client_get_player_info(data: Dictionary) -> void:
 @rpc("any_peer", "call_local", "reliable")
 func client_spawn_player(player_id, pos) -> void:
 	print("Player " + str(player_id) + " spawned in " + str(pos))
-
-
-func _ready() -> void:
-	host_game()
 
 
 func peer_connected(id):
