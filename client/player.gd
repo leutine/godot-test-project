@@ -38,18 +38,6 @@ signal spawned_mob
 signal died(player)
 
 
-func get_mouse_position():
-	if not is_multiplayer_authority(): return
-	var space_state = get_world_3d().direct_space_state
-	var mouse_position = get_viewport().get_mouse_position()
-	var ray_origin = camera.project_ray_origin(mouse_position)
-	var ray_end = ray_origin + camera.project_ray_normal(mouse_position) * 100
-	var intersection = space_state.intersect_ray(PhysicsRayQueryParameters3D.create(ray_origin, ray_end))
-	var target = intersection.get("position", Vector3())
-	target.y = position.y
-	return target
-
-
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
 	# Add the gravity.
@@ -74,8 +62,8 @@ func _physics_process(delta: float) -> void:
 	var speed = dodge_speed if dodge.is_dashing() else SPEED
 	
 	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
+		velocity.x = direction.x * speed
+		velocity.z = direction.z * speed
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
@@ -102,19 +90,17 @@ func _unhandled_input(_event: InputEvent) -> void:
 #		position = start_position
 #		velocity = Vector3.ZERO
 #		camera.position.z = default_camera_zoom
-		
-	var mouse_position: Vector3 = get_mouse_position()
-	
+
 	if _event.is_action_pressed("spawn_mob"):
 #		spawn_mob.rpc(mouse_position)
 		die()
 	
 	if _event.is_action_pressed("swap_weapon"):
 		swap_weapon.rpc()
-	
+
 	if _event.is_action_pressed("CameraZoomIn"):
 		camera_zoom(-camera_zoom_step)
-	
+
 	if _event.is_action_pressed("CameraZoomOut"):
 		camera_zoom(camera_zoom_step)
 
@@ -139,7 +125,6 @@ func _ready():
 	body.material_override = material
 	if not is_multiplayer_authority(): return
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	#camera_arm.set_as_top_level(true)
 	camera.current = true
 	default_camera_zoom = camera.position.z
 
