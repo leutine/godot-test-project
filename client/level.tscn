@@ -1,8 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://dnrotuaj6yba"]
+[gd_scene load_steps=14 format=3 uid="uid://dnrotuaj6yba"]
 
 [ext_resource type="Script" path="res://level.gd" id="1_2jtfs"]
 [ext_resource type="Texture2D" uid="uid://b1e8io3bqw2ri" path="res://assets/textures/grids/Dark/texture_05.png" id="2_l1wsi"]
-[ext_resource type="Texture2D" uid="uid://7lwxn4j2sft4" path="res://assets/textures/grids/Orange/texture_09.png" id="3_uwq02"]
+[ext_resource type="Texture2D" uid="uid://5u1vvc02fjep" path="res://assets/textures/grids/Orange/texture_05.png" id="3_34qaq"]
+[ext_resource type="Texture2D" uid="uid://bp3locxqg8lch" path="res://assets/textures/grids/Red/texture_05.png" id="3_frl1e"]
+[ext_resource type="PackedScene" uid="uid://dmfs5udv7n3su" path="res://enemy.tscn" id="5_7d4tm"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_oryas"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -25,8 +27,15 @@ albedo_texture = ExtResource("2_l1wsi")
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wnlpp"]
-albedo_texture = ExtResource("3_uwq02")
+albedo_texture = ExtResource("3_34qaq")
 uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t6egm"]
+albedo_texture = ExtResource("3_frl1e")
+uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hivm6"]
+size = Vector3(4.8999, 0.178711, 4.46338)
 
 [node name="Level" type="Node3D"]
 script = ExtResource("1_2jtfs")
@@ -131,6 +140,32 @@ use_collision = true
 size = Vector3(3, 3, 3)
 material = SubResource("StandardMaterial3D_wnlpp")
 
+[node name="Wall4" type="CSGBox3D" parent="CSGs"]
+transform = Transform3D(-2.98023e-07, 0, 1, 0, 1, 0, -1, 0, -2.98023e-07, 0.92539, 0.343999, 26.3849)
+use_collision = true
+collision_layer = 5
+size = Vector3(5.32056, 0.835571, 5.18503)
+material = SubResource("StandardMaterial3D_t6egm")
+
+[node name="Area3D" type="Area3D" parent="CSGs/Wall4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.638357, 0)
+collision_layer = 0
+collision_mask = 6
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CSGs/Wall4/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0421066, -0.11507, -0.118896)
+shape = SubResource("BoxShape3D_hivm6")
+
+[node name="DeathFloorTimer" type="Timer" parent="CSGs/Wall4"]
+autostart = true
+
+[node name="Enemy" parent="." instance=ExtResource("5_7d4tm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.48217, 4.16338, 28.0104)
+
 [connection signal="spawned" from="PlayersSpawner" to="." method="_on_players_spawner_spawned"]
 [connection signal="timeout" from="EnemySpawnTimer" to="." method="_on_enemy_spawn_timer_timeout"]
 [connection signal="body_entered" from="Void" to="." method="_on_void_body_entered"]
+[connection signal="body_entered" from="CSGs/Wall4/Area3D" to="." method="_on_death_floor_body_entered"]
+[connection signal="body_exited" from="CSGs/Wall4/Area3D" to="." method="_on_death_floor_body_exited"]
+[connection signal="timeout" from="CSGs/Wall4/DeathFloorTimer" to="." method="_on_death_floor_timer_timeout"]

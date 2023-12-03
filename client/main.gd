@@ -11,12 +11,12 @@ const Player = preload("res://scenes/player.tscn")
 #var enet_peer = ENetMultiplayerPeer.new()
 @onready var main_menu = $UI/MainMenu
 @onready var name_edit = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/NameEdit
-@onready var color_rect = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/ColorRect
 @onready var color_picker_button = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/ColorPickerButton
 @onready var died_label = $UI/HUD/YouDiedLabel
 @onready var crosshair_img = $UI/HUD/Crosshair
 @onready var players = $Players
 @onready var enemies = $Enemies
+
 
 const player_colors: Array[Color] = [Color.GREEN_YELLOW, Color.ORANGE_RED, Color.CORNFLOWER_BLUE, Color.BLACK, Color.MEDIUM_PURPLE]
 var color_picked_num: int = 0

@@ -12,6 +12,8 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var dodge_speed = 50.0
 var dodge_duration = 0.1
 
+var health: int = 20
+
 @onready var start_position = position
 @onready var gun_controller = $GunController
 @onready var name_label: Label3D = $NameLabel
@@ -88,10 +90,9 @@ func _unhandled_input(_event: InputEvent) -> void:
 	if _event.is_action_pressed("spawn_mob"):
 #		spawn_mob.rpc(mouse_position)
 		die()
-	
+
 	if _event.is_action_pressed("swap_weapon"):
 		swap_weapon.rpc()
-
 
 	if _event.is_action_pressed("primary_action"):
 		shoot.rpc()
@@ -168,6 +169,12 @@ func shoot():
 
 
 func die():
-	print_debug("oh no, i died")
 	queue_free()
 	died.emit(self)
+
+
+func get_hit(damage: int) -> void:
+	print("Player %s got %s damage!" % [self, damage])
+	health -= damage
+	if health <= 0:
+		die()

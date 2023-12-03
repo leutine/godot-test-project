@@ -2,6 +2,7 @@ extends CharacterBody3D
 
 class_name Enemy
 
+var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var stats = $Stats
@@ -16,11 +17,16 @@ func _process(_delta: float) -> void:
 		character_model_anim_player.play("idle")
 
 
-func _physics_process(_delta):
-	var current_location = global_transform.origin
-	var next_location = nav_agent.get_next_path_position()
-	var new_velocity = (next_location - current_location).normalized() * speed
-	nav_agent.set_velocity(new_velocity)
+func _physics_process(delta):
+	#var current_location = global_transform.origin
+	#var next_location = nav_agent.get_next_path_position()
+	#var new_velocity = (next_location - current_location).normalized() * speed
+	#nav_agent.set_velocity(new_velocity)
+	
+	if not is_on_floor():
+		velocity.y -= gravity * delta
+
+	move_and_slide()
 
 
 func update_target_location(loc):
