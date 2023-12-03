@@ -4,10 +4,16 @@ class_name Enemy
 
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
-@onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var stats = $Stats
 
+@onready var character_model_surface: MeshInstance3D = $CharacterModel/RootNode/GeneralSkeleton/Beta_Surface
+@onready var character_model_anim_player: AnimationPlayer = $CharacterModel/AnimationPlayer
+
 var speed = 3.0
+
+func _process(_delta: float) -> void:
+	if character_model_anim_player.current_animation != "idle":
+		character_model_anim_player.play("idle")
 
 
 func _physics_process(_delta):
@@ -20,8 +26,9 @@ func _physics_process(_delta):
 func update_target_location(loc):
 	nav_agent.set_target_position(loc)
 
+
 func reset_rotation():
-	$Pivot.rotation = Vector3.ZERO
+	rotation = Vector3.ZERO
 
 
 func _on_navigation_agent_3d_velocity_computed(safe_velocity):
@@ -34,15 +41,9 @@ func _on_stats_died_signal():
 
 
 func get_hit(damage: int) -> void:
-	anim_player.play("take_hit")
-	
+	character_model_anim_player.play("take_hit")
 	var tween = create_tween().set_loops(1)
-	tween.tween_property($Pivot, "rotation", Vector3(0, 0, 1.0), 0.15)
+	tween.tween_property(self, "rotation", Vector3(0, 0, 1.0), 0.15)
 	tween.tween_callback(reset_rotation)
 	
 	stats.take_hit(damage)
-
-# TODO: добывать урон не через родителя ареа3д (чтобы было универсально)
-func _on_hurtbox_area_entered(area: Area3D) -> void:
-	var parent = area.get_parent_node_3d()
-	get_hit(parent.damage)

@@ -1,8 +1,8 @@
 extends Node3D
 class_name Bullet
 
-@export var speed = 100
-@export var damage = 5
+var speed = 900.0
+var damage = 5
 
 const KILL_TIME = 2
 var timer = 0

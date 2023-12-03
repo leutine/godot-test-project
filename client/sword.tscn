@@ -1,23 +1,12 @@
-[gd_scene load_steps=11 format=3 uid="uid://dgajcf43paht0"]
+[gd_scene load_steps=7 format=3 uid="uid://dgajcf43paht0"]
 
 [ext_resource type="Script" path="res://sword.gd" id="1_merf0"]
-[ext_resource type="Script" path="res://blade.gd" id="2_3bkwf"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_nuwc0"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iuk5q"]
-albedo_color = Color(0.72549, 0.72549, 0.72549, 1)
-metallic = 1.0
-metallic_specular = 1.0
+[ext_resource type="ArrayMesh" uid="uid://c0c6ewr8rnsrm" path="res://assets/models/knife_sharp.obj" id="3_43ihe"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_u4xo2"]
+size = Vector3(0.456779, 1.37012, 0.539978)
 
-[sub_resource type="BoxMesh" id="BoxMesh_huc6h"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fx8l0"]
-albedo_color = Color(0.0509804, 0.0509804, 0.0509804, 1)
-
-[sub_resource type="Animation" id="Animation_xclud"]
+[sub_resource type="Animation" id="Animation_j5deb"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -32,10 +21,9 @@ tracks/0/keys = {
 "values": [Vector3(0, 0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_8vlfy"]
+[sub_resource type="Animation" id="Animation_scflt"]
 resource_name = "shoot"
-length = 0.15
-step = 0.01
+length = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -43,16 +31,28 @@ tracks/0/path = NodePath("Pivot:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.15),
+"times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector3(2.13175e-15, -2.60511, -1.5708), Vector3(-2.40776e-15, -0.537684, -1.5708)]
+"values": [Vector3(0, 0, -0.523599), Vector3(-0.349066, 2.0944, -1.74533)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Pivot/KnifeSharp/HitboxArea/Hitbox:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_8yecn"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wqnpr"]
 _data = {
-"RESET": SubResource("Animation_xclud"),
-"shoot": SubResource("Animation_8vlfy")
+"RESET": SubResource("Animation_j5deb"),
+"shoot": SubResource("Animation_scflt")
 }
 
 [node name="Sword" type="Node3D"]
@@ -60,35 +60,30 @@ script = ExtResource("1_merf0")
 
 [node name="Pivot" type="Marker3D" parent="."]
 
-[node name="Body" type="Node3D" parent="Pivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.74382, 0)
+[node name="KnifeSharp" type="MeshInstance3D" parent="Pivot"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.188804, 0)
+mesh = ExtResource("3_43ihe")
+skeleton = NodePath("../..")
 
-[node name="Blade" type="MeshInstance3D" parent="Pivot/Body"]
-transform = Transform3D(0.25, 0, 0, 0, 2, 0, 0, 0, 0.5, 0, 0, 0)
-mesh = SubResource("BoxMesh_nuwc0")
-surface_material_override/0 = SubResource("StandardMaterial3D_iuk5q")
-script = ExtResource("2_3bkwf")
-
-[node name="HitboxArea" type="Area3D" parent="Pivot/Body/Blade"]
+[node name="HitboxArea" type="Area3D" parent="Pivot/KnifeSharp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14516, 0)
 collision_layer = 2
 collision_mask = 4
-monitoring = false
+monitorable = false
 
-[node name="Hitbox" type="CollisionShape3D" parent="Pivot/Body/Blade/HitboxArea"]
-transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0, 0)
+[node name="Hitbox" type="CollisionShape3D" parent="Pivot/KnifeSharp/HitboxArea"]
+transform = Transform3D(0.315, 0, 0, 0, 0.315, 0, 0, 0, 0.315, 0.00175077, 0.00138426, 0.00458542)
 shape = SubResource("BoxShape3D_u4xo2")
-
-[node name="Handle" type="MeshInstance3D" parent="Pivot/Body"]
-transform = Transform3D(0.25, 0, 0, 0, 0.7, 0, 0, 0, 0.25, 0, -1.34744, 0)
-mesh = SubResource("BoxMesh_huc6h")
-surface_material_override/0 = SubResource("StandardMaterial3D_fx8l0")
+disabled = true
 
 [node name="Timer" type="Timer" parent="."]
+wait_time = 0.25
 one_shot = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_8yecn")
+"": SubResource("AnimationLibrary_wqnpr")
 }
 
+[connection signal="body_entered" from="Pivot/KnifeSharp/HitboxArea" to="." method="_on_hitbox_area_body_entered"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

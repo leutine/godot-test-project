@@ -1,11 +1,33 @@
-[gd_scene load_steps=2 format=3 uid="uid://ci3x45ef7v8fb"]
+[gd_scene load_steps=3 format=3 uid="uid://ci3x45ef7v8fb"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_powng"]
+[ext_resource type="Texture2D" uid="uid://dnfii75r70dnu" path="res://assets/textures/crosshair161.png" id="2_thosm"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_powng")
 
 [node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="CenterContainer" parent="UI"]
+anchors_preset = -1
+anchor_right = 0.999
+anchor_bottom = 0.995
+offset_right = 0.151855
+offset_bottom = 0.239929
+
+[node name="YouDiedLabel" type="Label" parent="UI/HUD"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "Lol you ded"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Crosshair" type="TextureRect" parent="UI/HUD"]
+visible = false
+layout_mode = 2
+texture = ExtResource("2_thosm")
 
 [node name="MainMenu" type="PanelContainer" parent="UI"]
 anchors_preset = 8
@@ -46,11 +68,11 @@ placeholder_text = "Player name"
 alignment = 1
 max_length = 20
 
-[node name="ColorRect" type="ColorRect" parent="UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="ColorPickerButton" type="ColorPickerButton" parent="UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 10.0
-color = Color(0, 0.568627, 0.572549, 1)
+text = "Click to change color"
+color = Color(0.678431, 0.929412, 0.878431, 1)
+edit_alpha = false
 
 [node name="HSeparator" type="HSeparator" parent="UI/MainMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -73,31 +95,10 @@ text = "Join"
 layout_mode = 2
 text = "Start"
 
-[node name="YouDiedLabel" type="Label" parent="UI"]
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -56.0
-offset_top = -15.0
-offset_right = 56.0
-offset_bottom = 17.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(56, 16)
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 20
-text = "Lol you ded"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="Players" type="Node" parent="."]
 
 [node name="Enemies" type="Node" parent="."]
 
-[connection signal="gui_input" from="UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/ColorRect" to="." method="_on_color_rect_gui_input"]
 [connection signal="button_down" from="UI/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_button_down"]
 [connection signal="button_down" from="UI/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_button_down"]
 [connection signal="button_down" from="UI/MainMenu/MarginContainer/VBoxContainer/StartButton" to="." method="_on_start_button_button_down"]

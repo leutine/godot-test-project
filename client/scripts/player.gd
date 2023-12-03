@@ -3,36 +3,32 @@ class_name Player
 
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
+const MOUSE_SENSITIVITY = 0.3
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 #@export var teleport_distance = 5.0
-@export var dodge_speed = 4000.0
-@export var dodge_duration = 0.1
-@export var name_label_text = "Player"
-@export var color = Color.BLACK
-@export var camera_zoom_step = 2
+var dodge_speed = 50.0
+var dodge_duration = 0.1
 
 @onready var start_position = position
 @onready var gun_controller = $GunController
-@onready var pivot = $Mesh
-@onready var body: MeshInstance3D = $Mesh/Body
 @onready var name_label: Label3D = $NameLabel
 @onready var dodge: Dodge = $Dodge
 @onready var mp_sync: MultiplayerSynchronizer = $MultiplayerSynchronizer
 @onready var camera_origin: Node3D = $CameraOrigin
 @onready var camera_arm: Node3D = $CameraOrigin/CameraArm
 @onready var camera: Camera3D = $CameraOrigin/CameraArm/Camera3D
-@onready var hand: Marker3D = $Mesh/Body/Hand
-
+@onready var hand: Marker3D = $Hand
 @onready var material: StandardMaterial3D = StandardMaterial3D.new()
+
+@onready var character_model_surface: MeshInstance3D = $CharacterModel/RootNode/GeneralSkeleton/Beta_Surface
+@onready var character_model_anim_player: AnimationPlayer = $CharacterModel/AnimationPlayer
+
+var name_label_text = "Player"
 var default_collision_mask = collision_mask
-var sync_delta
-var move_direction3
-var default_camera_zoom
-var fall_speed = 0
-const MOUSE_SENSITIVITY = 0.3
+var color = Color.BLACK
 
 signal spawned_mob
 signal died(player)
@@ -40,12 +36,17 @@ signal died(player)
 
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority(): return
+	character_model_anim_player.speed_scale = 1.0
 	# Add the gravity.
 	if not is_on_floor():
+		character_model_anim_player.play("jump")
+		character_model_anim_player.speed_scale = 2.0
 		velocity.y -= gravity * delta
 
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and is_on_floor():
+		character_model_anim_player.play("jump")
+		character_model_anim_player.speed_scale = 2.0
 		velocity.y = JUMP_VELOCITY
 
 	# Get the input direction and handle the movement/deceleration.
@@ -62,26 +63,19 @@ func _physics_process(delta: float) -> void:
 	var speed = dodge_speed if dodge.is_dashing() else SPEED
 	
 	if direction:
+		if character_model_anim_player.current_animation != "running" and is_on_floor():
+			character_model_anim_player.play("running")
+		#model.look_at(position + direction)
 		velocity.x = direction.x * speed
 		velocity.z = direction.z * speed
 	else:
+		if character_model_anim_player.current_animation != "idle" and is_on_floor():
+			character_model_anim_player.play("idle")
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	move_and_slide()
 	collision_mask = default_collision_mask
-
-
-#@rpc("any_peer", "call_local", "unreliable")
-#func update_position(id, pos):
-#	if not is_multiplayer_authority() and name == id:
-#		position = lerp(position, pos, sync_delta * 15)
-
-
-#@rpc("call_local")
-#func teleport(direction):
-	#position = position + (direction * teleport_distance)
-	#velocity = Vector3.ZERO
 
 
 func _unhandled_input(_event: InputEvent) -> void:
@@ -98,35 +92,48 @@ func _unhandled_input(_event: InputEvent) -> void:
 	if _event.is_action_pressed("swap_weapon"):
 		swap_weapon.rpc()
 
-	if _event.is_action_pressed("CameraZoomIn"):
-		camera_zoom(-camera_zoom_step)
-
-	if _event.is_action_pressed("CameraZoomOut"):
-		camera_zoom(camera_zoom_step)
 
 	if _event.is_action_pressed("primary_action"):
 		shoot.rpc()
 
 
-func _input(event):
+func get_center_position() -> Vector3:
+	var space_state = get_world_3d().direct_space_state
+	var viewport_center = Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
+	var ray_origin = camera.project_ray_origin(viewport_center)
+	var ray_end = ray_origin + camera.project_ray_normal(viewport_center) * 1000
+	var intersection = space_state.intersect_ray(PhysicsRayQueryParameters3D.create(ray_origin, ray_end))
+	var target = intersection.get("position", Vector3())
+	return target
+
+
+func rotate_camera(event: InputEventMouseMotion) -> void:
+	if not is_multiplayer_authority(): return
+	rotate_y(deg_to_rad(-event.relative.x * MOUSE_SENSITIVITY))
+	#model.rotate_y(deg_to_rad(event.relative.x * MOUSE_SENSITIVITY))
+	camera_origin.rotate_x(deg_to_rad(-event.relative.y * MOUSE_SENSITIVITY))
+	camera_origin.rotation.x = clamp(camera_origin.rotation.x, deg_to_rad(-90), deg_to_rad(45))
+	
+	var center = get_center_position()
+	hand.look_at(center)
+
+
+func _input(event: InputEvent):
 	if event is InputEventMouseMotion:
-		rotate_y(deg_to_rad(-event.relative.x * MOUSE_SENSITIVITY))
-		camera_origin.rotate_x(deg_to_rad(-event.relative.y * MOUSE_SENSITIVITY))
-		camera_origin.rotation.x = clamp(camera_origin.rotation.x, deg_to_rad(-90), deg_to_rad(45))
+		rotate_camera(event)
 
 
-func camera_zoom(multiplier: float):
-	camera.position.z = camera.position.z + multiplier 
+#func camera_zoom(multiplier: float):
+	#camera.position.z = camera.position.z + multiplier 
 	
 
 func _ready():
 	name_label.text = name_label_text
 	material.albedo_color = color
-	body.material_override = material
+	character_model_surface.material_override = material
 	if not is_multiplayer_authority(): return
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera.current = true
-	default_camera_zoom = camera.position.z
 
 
 func _enter_tree() -> void:
@@ -141,7 +148,7 @@ func spawn_mob(mob_position):
 func set_color(new_color: Color):
 	color = new_color
 	material.albedo_color = color
-	body.material_override = material
+	character_model_surface.material_override = material
 
 
 func set_player_name(new_name: String):
@@ -164,7 +171,3 @@ func die():
 	print_debug("oh no, i died")
 	queue_free()
 	died.emit(self)
-
-#func _on_timer_timeout() -> void:
-#	if is_multiplayer_authority():
-#		update_position.rpc(name, position)

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://d3ws4dogdrw4c"
-path="res://.godot/imported/mixamo_base.glb-554ecb1a4e19b3df006a5f8f00ffac1d.scn"
+uid="uid://b5h64q2cglt8g"
+path="res://.godot/imported/anim-Running.fbx-5fd0f779c57199ae97256561b89ae80b.scn"
 
 [deps]
 
-source_file="res://assets/models/mixamo_base.glb"
-dest_files=["res://.godot/imported/mixamo_base.glb-554ecb1a4e19b3df006a5f8f00ffac1d.scn"]
+source_file="res://imports/anim-Running.fbx"
+dest_files=["res://.godot/imported/anim-Running.fbx-5fd0f779c57199ae97256561b89ae80b.scn"]
 
 [params]
 

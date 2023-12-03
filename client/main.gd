@@ -12,7 +12,9 @@ const Player = preload("res://scenes/player.tscn")
 @onready var main_menu = $UI/MainMenu
 @onready var name_edit = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/NameEdit
 @onready var color_rect = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/ColorRect
-@onready var died_label = $UI/YouDiedLabel
+@onready var color_picker_button = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/ColorPickerButton
+@onready var died_label = $UI/HUD/YouDiedLabel
+@onready var crosshair_img = $UI/HUD/Crosshair
 @onready var players = $Players
 @onready var enemies = $Enemies
 
@@ -34,7 +36,7 @@ func get_player_info() -> PlayerInfo:
 	var player_info = PlayerInfo.new()
 	player_info.name = name_edit.text
 	player_info.id = multiplayer.get_unique_id()
-	player_info.color = color_rect.color
+	player_info.color = color_picker_button.color
 	return player_info
 
 
@@ -96,6 +98,7 @@ func start_game():
 	get_tree().root.add_child(scene)
 	main_menu.hide()
 	prepare_level()
+	crosshair_img.show()
 	for p_id in Server.players:
 		if p_id != multiplayer.get_unique_id():
 			client_ready_to_sync.rpc(multiplayer.get_unique_id())
@@ -176,22 +179,18 @@ func _on_start_button_button_down() -> void:
 	start_game()
 
 
-func _on_color_rect_gui_input(event: InputEvent) -> void:
-	if event.is_action_pressed("primary_action"):
-		color_picked_num += 1
-		color_rect.color = player_colors[color_picked_num % player_colors.size()]
-
-
 func respawn(player_id: int) -> void:
 	var player = add_new_player_to_scene(player_id)
 	died_label.hide()
-	
+	crosshair_img.show()
+
 
 func _on_player_died(player: Player) -> void:
 	if player.name != str(multiplayer.get_unique_id()):
 		return
 	is_dead = true
 	died_label.show()
+	crosshair_img.hide()
 	var tw = create_tween().bind_node(died_label)
 	tw.set_parallel()
 	tw.set_trans(Tween.TRANS_ELASTIC)

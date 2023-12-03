@@ -30,6 +30,18 @@ tracks/0/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BodyPivot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, -0.03)]
+}
 
 [sub_resource type="Animation" id="Animation_4dptx"]
 resource_name = "shoot"
@@ -54,10 +66,10 @@ tracks/1/path = NodePath("BodyPivot:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(0.112656, 12.5534, 0.307786),
 "update": 0,
-"values": [Vector3(0, 0, 0)]
+"values": [Vector3(0, 0, 0), Vector3(0, 0, -0.09), Vector3(0, 0, 0)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -79,17 +91,18 @@ _data = {
 }
 
 [node name="Gun" type="Node3D"]
-transform = Transform3D(0.646061, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(-0.646061, 0, 8.74228e-08, 0, 1, 0, -5.64804e-08, 0, -1, 0, 0, 0)
 script = ExtResource("1_b8eue")
 bullet = ExtResource("2_yuitu")
 
 [node name="BodyPivot" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.03)
 
 [node name="ShootingMarker" type="Marker3D" parent="BodyPivot"]
-transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0.303933, 1.11562)
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -1.04134e-07, 0.0815604, 0.346062)
 
 [node name="Body" type="Node3D" parent="BodyPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0.5)
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -5.25908e-08, 0.0776274, 0.11135)
 
 [node name="Barrel" type="MeshInstance3D" parent="BodyPivot/Body"]
 transform = Transform3D(0.473, 0, 0, 0, 0.467, 0, 0, 0, 1.2, 0, 0, 0)
@@ -124,7 +137,13 @@ gravity = Vector3(0, 0, 0)
 initial_velocity_max = 10.0
 scale_amount_max = 2.0
 
-[node name="Timer" type="Timer" parent="."]
+[node name="AimRayCast" type="RayCast3D" parent="BodyPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 1.42109e-14, 0, 1, 4.55375e-08, 0.0793149, 0.336526)
+target_position = Vector3(0, 0, 100)
+collision_mask = 7
+collide_with_areas = true
+
+[node name="ROFTimer" type="Timer" parent="."]
 one_shot = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -132,4 +151,4 @@ libraries = {
 "": SubResource("AnimationLibrary_tgqaa")
 }
 
-[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="ROFTimer" to="." method="_on_timer_timeout"]
