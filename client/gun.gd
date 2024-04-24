@@ -29,8 +29,8 @@ func shoot():
 		scene_root.add_child(new_bullet)
 
 		if aim_ray_cast.is_colliding():
-			var node = aim_ray_cast.get_collider().get_parent_node_3d()
-			if node.is_in_group("enemies"):
+			var node = aim_ray_cast.get_collider()
+			if node and node.is_in_group("enemies") or node.is_in_group("players"):
 				node.get_hit(damage)
 
 		can_shoot = false

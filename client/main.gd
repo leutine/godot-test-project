@@ -20,7 +20,7 @@ const Player = preload("res://scenes/player.tscn")
 
 const player_colors: Array[Color] = [Color.GREEN_YELLOW, Color.ORANGE_RED, Color.CORNFLOWER_BLUE, Color.BLACK, Color.MEDIUM_PURPLE]
 var color_picked_num: int = 0
-var is_dead: bool = false
+
 
 func print_players_sync():
 	var visibilities = {}
@@ -46,6 +46,7 @@ func sync_player(player_id: int) -> void:
 			client_ready_to_sync.rpc(multiplayer.get_unique_id())
 		for p in get_tree().get_nodes_in_group("players"):
 			p.died.connect(_on_player_died)
+			p.spawned.connect(_on_player_spawned)
 			if p_id != multiplayer.get_unique_id():
 				p.mp_sync.set_visibility_for(p_id, true)
 
@@ -56,6 +57,7 @@ func get_new_player(player_info: PlayerInfo) -> Player:
 	new_player.color = player_info.color
 	new_player.name_label_text = player_info.name
 	return new_player
+
 
 func add_new_player_to_scene(player_id: int) -> Player:
 	var player_info = Server.players[player_id]
@@ -72,8 +74,6 @@ func prepare_level() -> void:
 		add_new_player_to_scene(i)
 	print("PLAYERS on %s: " % str(multiplayer.get_unique_id()), get_tree().get_nodes_in_group("players"))
 
-#	print_players_sync()
-
 
 func spawn_player(player_id, pos) -> void:
 	if not Server.players.has(player_id):
@@ -81,18 +81,7 @@ func spawn_player(player_id, pos) -> void:
 	print("%s - spawn_player: %s" % [str(multiplayer.get_unique_id()), str(player_id)])
 	add_new_player_to_scene(player_id)
 
-#	print_players_sync()
 
-
-#@rpc("any_peer")
-#func send_player_info(data: Dictionary) -> void:
-#	var player_info = PlayerInfo.from_dict(data)
-#
-#	if not Server.players.has(player_info.id):
-#		Server.players[player_info.id] = player_info
-
-
-#@rpc("any_peer", "call_local")
 func start_game():
 	var scene = load("res://level.tscn").instantiate()
 	get_tree().root.add_child(scene)
@@ -104,6 +93,7 @@ func start_game():
 			client_ready_to_sync.rpc(multiplayer.get_unique_id())
 		for p in get_tree().get_nodes_in_group("players"):
 			p.died.connect(_on_player_died)
+			p.spawned.connect(_on_player_spawned)
 			if p_id != multiplayer.get_unique_id():
 				p.mp_sync.set_visibility_for(p_id, true)
 #	print_players_sync()
@@ -136,6 +126,7 @@ func connection_failed():
 
 func server_disconnected():
 	print("Server disconnected")
+	Server.is_connected_to_server = false
 	main_menu.show()
 
 
@@ -144,10 +135,6 @@ func client_ready_to_sync(player_id):
 	for p in get_tree().get_nodes_in_group("players"):
 		p.mp_sync.set_visibility_for(player_id, true)
 
-
-func _unhandled_input(_event: InputEvent) -> void:
-	if _event.is_action_pressed("ui_accept") and is_dead:
-		respawn(multiplayer.get_unique_id())
 
 #func host_game():
 #	var peer = ENetMultiplayerPeer.new()
@@ -179,16 +166,18 @@ func _on_start_button_button_down() -> void:
 	start_game()
 
 
-func respawn(player_id: int) -> void:
-	var player = add_new_player_to_scene(player_id)
+func _on_player_spawned(player: Player) -> void:
 	died_label.hide()
 	crosshair_img.show()
+	var spawn_points = get_tree().get_nodes_in_group("PlayerSpawnPoint")
+	player.global_position = spawn_points.pick_random().global_position
+	player.is_dead = false
 
 
 func _on_player_died(player: Player) -> void:
 	if player.name != str(multiplayer.get_unique_id()):
 		return
-	is_dead = true
+	player.is_dead = true
 	died_label.show()
 	crosshair_img.hide()
 	var tw = create_tween().bind_node(died_label)

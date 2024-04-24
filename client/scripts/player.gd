@@ -3,7 +3,6 @@ class_name Player
 
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
-const MOUSE_SENSITIVITY = 0.3
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -14,41 +13,46 @@ var dodge_duration = 0.1
 
 var health: int = 20
 
+@export var rotation_speed := 12.0
+
 @onready var start_position = position
 @onready var gun_controller = $GunController
 @onready var name_label: Label3D = $NameLabel
 @onready var dodge: Dodge = $Dodge
 @onready var mp_sync: MultiplayerSynchronizer = $MultiplayerSynchronizer
-@onready var camera_origin: Node3D = $CameraOrigin
-@onready var camera_arm: Node3D = $CameraOrigin/CameraArm
-@onready var camera: Camera3D = $CameraOrigin/CameraArm/Camera3D
-@onready var hand: Marker3D = $Hand
+@onready var camera_controller: Node3D = $CameraController
+@onready var hand: Marker3D = $RotationRoot/Hand
 @onready var material: StandardMaterial3D = StandardMaterial3D.new()
+@onready var _rotation_root: Node3D = $RotationRoot
+@onready var _move_direction := Vector3.ZERO
 
-@onready var character_model_surface: MeshInstance3D = $CharacterModel/RootNode/GeneralSkeleton/Beta_Surface
-@onready var character_model_anim_player: AnimationPlayer = $CharacterModel/AnimationPlayer
+@onready var character_model: Node3D = $RotationRoot/CharacterModel
+@onready var character_model_surface: MeshInstance3D = $RotationRoot/CharacterModel/RootNode/GeneralSkeleton/Beta_Surface
+@onready var character_model_anim_player: AnimationPlayer = $RotationRoot/CharacterModel/AnimationPlayer
 
 var name_label_text = "Player"
 var default_collision_mask = collision_mask
 var color = Color.BLACK
+var is_dead: bool = false
 
 signal spawned_mob
 signal died(player)
+signal spawned(player)
 
 
 func _physics_process(delta: float) -> void:
-	if not is_multiplayer_authority(): return
+	if Server.is_connected_to_server or not is_multiplayer_authority() or is_dead: return
 	character_model_anim_player.speed_scale = 1.0
 	# Add the gravity.
 	if not is_on_floor():
-		character_model_anim_player.play("jump")
-		character_model_anim_player.speed_scale = 2.0
+		#character_model_anim_player.play("jump")
+		#character_model_anim_player.speed_scale = 2.0
 		velocity.y -= gravity * delta
 
 	# Handle jump.
 	if Input.is_action_just_pressed("jump") and is_on_floor():
-		character_model_anim_player.play("jump")
-		character_model_anim_player.speed_scale = 2.0
+		#character_model_anim_player.play("jump")
+		#character_model_anim_player.speed_scale = 2.0
 		velocity.y = JUMP_VELOCITY
 
 	# Get the input direction and handle the movement/deceleration.
@@ -64,10 +68,12 @@ func _physics_process(delta: float) -> void:
 
 	var speed = dodge_speed if dodge.is_dashing() else SPEED
 	
+	direction = camera_controller.global_transform.basis * direction
+	hand.look_at(camera_controller.get_aim_target())
 	if direction:
+		_orient_character_to_direction(-direction, delta)
 		if character_model_anim_player.current_animation != "running" and is_on_floor():
 			character_model_anim_player.play("running")
-		#model.look_at(position + direction)
 		velocity.x = direction.x * speed
 		velocity.z = direction.z * speed
 	else:
@@ -75,17 +81,13 @@ func _physics_process(delta: float) -> void:
 			character_model_anim_player.play("idle")
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
-
+	
 	move_and_slide()
 	collision_mask = default_collision_mask
 
 
 func _unhandled_input(_event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
-#	if _event.is_action_pressed("ui_accept"):
-#		position = start_position
-#		velocity = Vector3.ZERO
-#		camera.position.z = default_camera_zoom
 
 	if _event.is_action_pressed("spawn_mob"):
 #		spawn_mob.rpc(mouse_position)
@@ -96,37 +98,17 @@ func _unhandled_input(_event: InputEvent) -> void:
 
 	if _event.is_action_pressed("primary_action"):
 		shoot.rpc()
-
-
-func get_center_position() -> Vector3:
-	var space_state = get_world_3d().direct_space_state
-	var viewport_center = Vector2(get_viewport().size.x / 2, get_viewport().size.y / 2)
-	var ray_origin = camera.project_ray_origin(viewport_center)
-	var ray_end = ray_origin + camera.project_ray_normal(viewport_center) * 1000
-	var intersection = space_state.intersect_ray(PhysicsRayQueryParameters3D.create(ray_origin, ray_end))
-	var target = intersection.get("position", Vector3())
-	return target
-
-
-func rotate_camera(event: InputEventMouseMotion) -> void:
-	if not is_multiplayer_authority(): return
-	rotate_y(deg_to_rad(-event.relative.x * MOUSE_SENSITIVITY))
-	#model.rotate_y(deg_to_rad(event.relative.x * MOUSE_SENSITIVITY))
-	camera_origin.rotate_x(deg_to_rad(-event.relative.y * MOUSE_SENSITIVITY))
-	camera_origin.rotation.x = clamp(camera_origin.rotation.x, deg_to_rad(-90), deg_to_rad(45))
 	
-	var center = get_center_position()
-	hand.look_at(center)
+	if _event.is_action_pressed("ui_accept") and is_dead:
+		respawn()
 
 
-func _input(event: InputEvent):
-	if event is InputEventMouseMotion:
-		rotate_camera(event)
+func _orient_character_to_direction(direction: Vector3, delta: float) -> void:
+	var left_axis := Vector3.UP.cross(direction)
+	var rotation_basis := Basis(left_axis, Vector3.UP, direction).get_rotation_quaternion()
+	var model_scale := _rotation_root.transform.basis.get_scale()
+	_rotation_root.transform.basis = Basis(_rotation_root.transform.basis.get_rotation_quaternion().slerp(rotation_basis, delta * rotation_speed)).scaled(model_scale)
 
-
-#func camera_zoom(multiplier: float):
-	#camera.position.z = camera.position.z + multiplier 
-	
 
 func _ready():
 	name_label.text = name_label_text
@@ -134,7 +116,8 @@ func _ready():
 	character_model_surface.material_override = material
 	if not is_multiplayer_authority(): return
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	camera.current = true
+	camera_controller.setup(self)
+	camera_controller.camera.current = true
 
 
 func _enter_tree() -> void:
@@ -168,13 +151,30 @@ func shoot():
 	gun_controller.shoot()
 
 
+func respawn():
+	visible = true
+	is_dead = false
+	health = 20
+	spawned.emit(self)
+	Server.server_player_spawned.rpc_id(1, Server.players[multiplayer.get_unique_id()])
+
+
 func die():
-	queue_free()
+	visible = false
+	is_dead = true
 	died.emit(self)
+	Server.server_player_died.rpc_id(1, multiplayer.get_unique_id())
+
+
+func reset_rotation():
+	character_model.rotation = Vector3.ZERO
 
 
 func get_hit(damage: int) -> void:
 	print("Player %s got %s damage!" % [self, damage])
+	var tween = create_tween().set_loops(1)
+	tween.tween_property(character_model, "rotation", Vector3(0, 0, 1.0), 0.15)
+	tween.tween_callback(reset_rotation)
 	health -= damage
 	if health <= 0:
 		die()
