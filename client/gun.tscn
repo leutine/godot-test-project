@@ -139,9 +139,9 @@ scale_amount_max = 2.0
 
 [node name="AimRayCast" type="RayCast3D" parent="BodyPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 1.42109e-14, 0, 1, 4.55375e-08, 0.0793149, 0.336526)
+exclude_parent = false
 target_position = Vector3(0, 0, 100)
 collision_mask = 7
-collide_with_areas = true
 
 [node name="ROFTimer" type="Timer" parent="."]
 one_shot = true

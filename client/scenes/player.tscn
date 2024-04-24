@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://co5plf8mt2t47"]
+[gd_scene load_steps=10 format=3 uid="uid://co5plf8mt2t47"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_kvr5b"]
 [ext_resource type="PackedScene" uid="uid://crk4lfpy8252t" path="res://scenes/character_model.tscn" id="2_w1n22"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://7c03sqbjd8vg" path="res://gun.tscn" id="4_3i5dw"]
 [ext_resource type="PackedScene" uid="uid://dgajcf43paht0" path="res://sword.tscn" id="5_lvpwe"]
 [ext_resource type="PackedScene" uid="uid://b5bjduqwda6j3" path="res://dodge.tscn" id="6_r6ptd"]
+[ext_resource type="Script" path="res://scripts/CameraController.gd" id="7_lkutk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3oy5u"]
 radius = 0.3
@@ -37,9 +38,11 @@ script = ExtResource("1_kvr5b")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_3oy5u")
 
-[node name="CharacterModel" parent="." instance=ExtResource("2_w1n22")]
+[node name="RotationRoot" type="Node3D" parent="."]
 
-[node name="Hand" type="Marker3D" parent="."]
+[node name="CharacterModel" parent="RotationRoot" instance=ExtResource("2_w1n22")]
+
+[node name="Hand" type="Marker3D" parent="RotationRoot"]
 transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.339128, 1.0381, -0.556032)
 
 [node name="GunController" type="Node" parent="."]
@@ -60,10 +63,23 @@ public_visibility = false
 
 [node name="Dodge" parent="." instance=ExtResource("6_r6ptd")]
 
-[node name="CameraOrigin" type="Node3D" parent="."]
+[node name="CameraController" type="Node3D" parent="."]
+script = ExtResource("7_lkutk")
+tilt_upper_limit = 0.8
+tilt_lower_limit = -0.8
 
-[node name="CameraArm" type="SpringArm3D" parent="CameraOrigin"]
-transform = Transform3D(1, 0, 0, 0, 0.965925, 0.258819, 0, -0.258819, 0.965925, 1.5, 2, 2)
-margin = 0.3
+[node name="Camera3D" type="Camera3D" parent="CameraController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.30978, 2.93222)
 
-[node name="Camera3D" type="Camera3D" parent="CameraOrigin/CameraArm"]
+[node name="CameraRayCast" type="RayCast3D" parent="CameraController/Camera3D"]
+target_position = Vector3(0, 0, -100)
+collision_mask = 7
+
+[node name="CameraOverShoulderPivot" type="Marker3D" parent="CameraController"]
+
+[node name="CameraArm" type="SpringArm3D" parent="CameraController"]
+transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, 1.5, 2, 2)
+margin = 0.2
+
+[node name="CameraThirdPersonPivot" type="Marker3D" parent="CameraController/CameraArm"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.602583, 0.011374, -0.783995)
