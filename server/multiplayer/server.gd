@@ -21,7 +21,6 @@ func _ready() -> void:
 @rpc("any_peer", "call_remote", "reliable")
 func server_send_player_info(data: Dictionary) -> void:
 	var player_info = PlayerInfo.from_dict(data)
-	print(player_info.to_dict())
 
 	if not players.has(player_info.id):
 		players[player_info.id] = player_info
@@ -30,14 +29,38 @@ func server_send_player_info(data: Dictionary) -> void:
 	client_get_player_info.rpc(convert_players())
 
 
-@rpc("any_peer", "call_local", "reliable") 
+@rpc("any_peer", "call_remote", "reliable") 
 func client_get_player_info(data: Dictionary) -> void:
 	print("Server: get_player_info")
 
 
-@rpc("any_peer", "call_local", "reliable")
+@rpc("any_peer", "call_remote", "reliable")
 func client_spawn_player(player_id, pos) -> void:
 	print("Player " + str(player_id) + " spawned in " + str(pos))
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func server_player_died(player_id: int) -> void:
+	print("server_player_died: %s" % str(player_id))
+	client_player_died.rpc(player_id)
+
+
+@rpc("any_peer", "call_remote", "reliable") 
+func client_player_died(player_id: int) -> void:
+	print("client_player_died: %s" % str(player_id))
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func server_player_spawned(data: Dictionary) -> void:
+	var player_info = PlayerInfo.from_dict(data)
+	print("server_player_spawned: %s" % str(player_info.id))
+	client_player_spawned.rpc(data)
+
+
+@rpc("any_peer", "call_remote", "reliable") 
+func client_player_spawned(data: Dictionary) -> void:
+	var player_info = PlayerInfo.from_dict(data)
+	print("client_player_spawned: %s" % str(player_info.id))
 
 
 func peer_connected(id):
