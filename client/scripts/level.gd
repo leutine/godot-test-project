@@ -2,7 +2,7 @@ extends Node3D
 
 
 const Player = preload("res://scenes/player.tscn")
-const Enemy = preload("res://enemy.tscn")
+const Enemy = preload("res://scenes/enemy.tscn")
 
 @onready var spawn_points = $PlayerSpawnPoint
 @onready var enemy_spawn_points = $EnemiesSpawnPoint

@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://ci3x45ef7v8fb"]
+[gd_scene load_steps=3 format=3 uid="uid://cvuv6ueorpmt"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_powng"]
-[ext_resource type="Texture2D" uid="uid://dnfii75r70dnu" path="res://assets/textures/crosshair161.png" id="2_thosm"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_mq2k3"]
+[ext_resource type="Texture2D" uid="uid://dnfii75r70dnu" path="res://assets/textures/crosshair161.png" id="2_7an55"]
 
 [node name="Main" type="Node"]
-script = ExtResource("1_powng")
+script = ExtResource("1_mq2k3")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -27,7 +27,7 @@ vertical_alignment = 1
 [node name="Crosshair" type="TextureRect" parent="UI/HUD"]
 visible = false
 layout_mode = 2
-texture = ExtResource("2_thosm")
+texture = ExtResource("2_7an55")
 
 [node name="MainMenu" type="PanelContainer" parent="UI"]
 anchors_preset = 8
