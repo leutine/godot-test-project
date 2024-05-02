@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_kvr5b"]
 [ext_resource type="PackedScene" uid="uid://crk4lfpy8252t" path="res://scenes/character_model.tscn" id="2_w1n22"]
-[ext_resource type="Script" path="res://GunController.gd" id="3_nucn3"]
-[ext_resource type="PackedScene" uid="uid://7c03sqbjd8vg" path="res://gun.tscn" id="4_3i5dw"]
-[ext_resource type="PackedScene" uid="uid://dgajcf43paht0" path="res://sword.tscn" id="5_lvpwe"]
-[ext_resource type="PackedScene" uid="uid://b5bjduqwda6j3" path="res://dodge.tscn" id="6_r6ptd"]
+[ext_resource type="Script" path="res://scripts/GunController.gd" id="3_l4xy0"]
+[ext_resource type="PackedScene" uid="uid://ddwv4x0r6b241" path="res://scenes/gun.tscn" id="4_8cwht"]
+[ext_resource type="PackedScene" uid="uid://57v1vgvwcwm8" path="res://scenes/sword.tscn" id="5_xcn7q"]
+[ext_resource type="PackedScene" uid="uid://bs76rm217pjkt" path="res://scenes/dodge.tscn" id="6_doj6h"]
 [ext_resource type="Script" path="res://scripts/CameraController.gd" id="7_lkutk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3oy5u"]
@@ -46,8 +46,8 @@ shape = SubResource("CapsuleShape3D_3oy5u")
 transform = Transform3D(0.999999, 0, 0, 0, 1, 0, 0, 0, 0.999999, 0.339128, 1.0381, -0.556032)
 
 [node name="GunController" type="Node" parent="."]
-script = ExtResource("3_nucn3")
-weapons = Array[PackedScene]([ExtResource("4_3i5dw"), ExtResource("5_lvpwe")])
+script = ExtResource("3_l4xy0")
+weapons = Array[PackedScene]([ExtResource("4_8cwht"), ExtResource("5_xcn7q")])
 
 [node name="NameLabel" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000263751, 2.07069, -0.00156093)
@@ -61,7 +61,7 @@ replication_interval = 0.01
 replication_config = SubResource("SceneReplicationConfig_doaly")
 public_visibility = false
 
-[node name="Dodge" parent="." instance=ExtResource("6_r6ptd")]
+[node name="Dodge" parent="." instance=ExtResource("6_doj6h")]
 
 [node name="CameraController" type="Node3D" parent="."]
 script = ExtResource("7_lkutk")

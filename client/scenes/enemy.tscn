@@ -1,8 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dmfs5udv7n3su"]
+[gd_scene load_steps=7 format=3 uid="uid://sfyv3hyv2m38"]
 
-[ext_resource type="Script" path="res://enemy.gd" id="1_ht8c7"]
-[ext_resource type="PackedScene" uid="uid://biut5o42ltd8q" path="res://stats.tscn" id="2_fsee3"]
-[ext_resource type="PackedScene" uid="uid://crk4lfpy8252t" path="res://scenes/character_model.tscn" id="2_p7r13"]
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_vi1g4"]
+[ext_resource type="PackedScene" uid="uid://crk4lfpy8252t" path="res://scenes/character_model.tscn" id="2_1xno0"]
+[ext_resource type="PackedScene" uid="uid://ce8n6yppatv82" path="res://scenes/stats.tscn" id="3_i8sui"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4onvx"]
 radius = 0.3
@@ -21,9 +21,9 @@ properties/1/replication_mode = 1
 [node name="Enemy" type="CharacterBody3D" groups=["enemies"]]
 collision_layer = 4
 collision_mask = 7
-script = ExtResource("1_ht8c7")
+script = ExtResource("1_vi1g4")
 
-[node name="CharacterModel" parent="." instance=ExtResource("2_p7r13")]
+[node name="CharacterModel" parent="." instance=ExtResource("2_1xno0")]
 
 [node name="Hitbox" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -42,7 +42,7 @@ target_desired_distance = 2.0
 path_height_offset = 0.1
 avoidance_enabled = true
 
-[node name="Stats" parent="." instance=ExtResource("2_fsee3")]
+[node name="Stats" parent="." instance=ExtResource("3_i8sui")]
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_k6ckn")

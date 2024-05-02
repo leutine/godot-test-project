@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://b3ngp714ckaf2"]
+[gd_scene load_steps=5 format=3 uid="uid://5ght8vq5k16w"]
 
-[ext_resource type="Script" path="res://bullet.gd" id="1_cpack"]
+[ext_resource type="Script" path="res://scripts/bullet.gd" id="1_wkc3t"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_0veh3"]
 
@@ -10,7 +10,7 @@ albedo_color = Color(1, 1, 0.0784314, 1)
 [sub_resource type="SphereShape3D" id="SphereShape3D_3gqiv"]
 
 [node name="Bullet" type="Node3D"]
-script = ExtResource("1_cpack")
+script = ExtResource("1_wkc3t")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 cast_shadow = 0

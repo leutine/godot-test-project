@@ -1,7 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://dgajcf43paht0"]
+[gd_scene load_steps=7 format=3 uid="uid://57v1vgvwcwm8"]
 
-[ext_resource type="Script" path="res://sword.gd" id="1_merf0"]
-[ext_resource type="ArrayMesh" uid="uid://c0c6ewr8rnsrm" path="res://assets/models/knife_sharp.obj" id="3_43ihe"]
+[ext_resource type="Script" path="res://scripts/sword.gd" id="1_cpql8"]
+[ext_resource type="ArrayMesh" uid="uid://c0c6ewr8rnsrm" path="res://assets/models/knife_sharp.obj" id="2_3nen4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_u4xo2"]
 size = Vector3(0.456779, 1.37012, 0.539978)
@@ -56,13 +56,13 @@ _data = {
 }
 
 [node name="Sword" type="Node3D"]
-script = ExtResource("1_merf0")
+script = ExtResource("1_cpql8")
 
 [node name="Pivot" type="Marker3D" parent="."]
 
 [node name="KnifeSharp" type="MeshInstance3D" parent="Pivot"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.188804, 0)
-mesh = ExtResource("3_43ihe")
+mesh = ExtResource("2_3nen4")
 skeleton = NodePath("../..")
 
 [node name="HitboxArea" type="Area3D" parent="Pivot/KnifeSharp"]

@@ -5,7 +5,7 @@ const ADDRESS = "localhost"
 const PORT = 8910
 
 const Player = preload("res://scenes/player.tscn")
-#const Enemy = preload("res://enemy.tscn")
+#const Enemy = preload("res://scenes/enemy.tscn")
 #const PORT = 9999
 #const SPAWN_RANDOM := 5.0
 #var enet_peer = ENetMultiplayerPeer.new()
@@ -83,7 +83,7 @@ func spawn_player(player_id, pos) -> void:
 
 
 func start_game():
-	var scene = load("res://level.tscn").instantiate()
+	var scene = load("res://scenes/levels/test.tscn").instantiate()
 	get_tree().root.add_child(scene)
 	main_menu.hide()
 	prepare_level()

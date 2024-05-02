@@ -1,7 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://7c03sqbjd8vg"]
+[gd_scene load_steps=10 format=3 uid="uid://ddwv4x0r6b241"]
 
-[ext_resource type="Script" path="res://gun.gd" id="1_b8eue"]
-[ext_resource type="PackedScene" uid="uid://b3ngp714ckaf2" path="res://bullet.tscn" id="2_yuitu"]
+[ext_resource type="Script" path="res://scripts/gun.gd" id="1_lr64o"]
+[ext_resource type="PackedScene" uid="uid://5ght8vq5k16w" path="res://scenes/bullet.tscn" id="2_liryq"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_p7xbe"]
 
@@ -92,8 +92,8 @@ _data = {
 
 [node name="Gun" type="Node3D"]
 transform = Transform3D(-0.646061, 0, 8.74228e-08, 0, 1, 0, -5.64804e-08, 0, -1, 0, 0, 0)
-script = ExtResource("1_b8eue")
-bullet = ExtResource("2_yuitu")
+script = ExtResource("1_lr64o")
+bullet = ExtResource("2_liryq")
 
 [node name="BodyPivot" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.03)
