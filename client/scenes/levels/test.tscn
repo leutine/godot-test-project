@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://dpleh1r3bojbp"]
 
-[ext_resource type="Script" path="res://scripts/level.gd" id="1_agm0s"]
+[ext_resource type="Script" path="res://scripts/levels/test.gd" id="1_obaai"]
 [ext_resource type="Texture2D" uid="uid://b1e8io3bqw2ri" path="res://assets/textures/grids/Dark/texture_05.png" id="2_pdmld"]
 [ext_resource type="Texture2D" uid="uid://5u1vvc02fjep" path="res://assets/textures/grids/Orange/texture_05.png" id="3_q6qfp"]
 [ext_resource type="Texture2D" uid="uid://bp3locxqg8lch" path="res://assets/textures/grids/Red/texture_05.png" id="4_ommsa"]
@@ -37,7 +37,7 @@ uv1_triplanar = true
 size = Vector3(4.8999, 0.178711, 4.46338)
 
 [node name="TestLevel" type="Node3D"]
-script = ExtResource("1_agm0s")
+script = ExtResource("1_obaai")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
@@ -46,12 +46,12 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_gisg4")
 
-[node name="PlayersSpawner" type="MultiplayerSpawner" parent="."]
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/player.tscn")
 spawn_path = NodePath("../Players")
 spawn_limit = 5
 
 [node name="EnemiesSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://enemy.tscn")
 spawn_path = NodePath("../Enemies")
 spawn_limit = 20
 
@@ -165,7 +165,7 @@ shape = SubResource("BoxShape3D_hivm6")
 [node name="DeathFloorTimer" type="Timer" parent="CSGs/Wall4"]
 autostart = true
 
-[connection signal="spawned" from="PlayersSpawner" to="." method="_on_players_spawner_spawned"]
+[connection signal="spawned" from="PlayerSpawner" to="." method="_on_players_spawner_spawned"]
 [connection signal="timeout" from="EnemySpawnTimer" to="." method="_on_enemy_spawn_timer_timeout"]
 [connection signal="body_entered" from="Void" to="." method="_on_void_body_entered"]
 [connection signal="body_entered" from="CSGs/Wall4/Area3D" to="." method="_on_death_floor_body_entered"]
