@@ -1,10 +1,6 @@
 extends Node
 
 
-@export var ADDRESS = "localhost"
-@export var PORT = 8910
-@export var MAX_CLIENTS = 5
-
 signal player_spawned(player_id, position)
 signal player_died(player_id)
 
@@ -42,18 +38,6 @@ func server_player_spawned(data: Dictionary) -> void:
 @rpc("any_peer", "call_remote", "reliable") 
 func client_player_spawned(data: Dictionary) -> void:
 	print("%s - client_player_spawned: %s" % [str(multiplayer.get_remote_sender_id()), data])
-
-
-#func host_game():
-#	var peer = ENetMultiplayerPeer.new()
-#	var error = peer.create_server(PORT, MAX_CLIENTS)
-#	if error != OK:
-#		print("Server failed: " + error)
-#		return
-#	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
-#
-#	multiplayer.multiplayer_peer = peer
-#	print("Server created")
 
 
 func join_game(address, port):
