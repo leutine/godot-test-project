@@ -91,14 +91,12 @@ max_length = 20
 layout_mode = 2
 text = "Join"
 
-[node name="StartButton" type="Button" parent="UI/MainMenu/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Start"
+[node name="Level" type="Node" parent="."]
 
-[node name="Players" type="Node" parent="."]
-
-[node name="Enemies" type="Node" parent="."]
+[node name="LevelSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/levels/test.tscn")
+spawn_path = NodePath("../Level")
+spawn_limit = 1
 
 [connection signal="button_down" from="UI/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_button_down"]
 [connection signal="button_down" from="UI/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_button_down"]
-[connection signal="button_down" from="UI/MainMenu/MarginContainer/VBoxContainer/StartButton" to="." method="_on_start_button_button_down"]
