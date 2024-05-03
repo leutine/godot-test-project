@@ -65,9 +65,6 @@ func client_player_spawned(data: Dictionary) -> void:
 
 func peer_connected(id):
 	print("Player connected " + str(id))
-	while not players.has(id):
-		await get_tree().create_timer(0.05).timeout
-	client_spawn_player.rpc(id, Vector3(-15, 0, 7))
 
 
 func peer_disconnected(id):
@@ -89,3 +86,28 @@ func host_game():
 
 	multiplayer.multiplayer_peer = peer
 	print("Server created")
+	start_game()
+
+func start_game():
+	get_tree().paused = false
+	# Only change level on the server.
+	# Clients will instantiate the level via the spawner.
+	change_level.call_deferred(load("res://scenes/levels/test.tscn"))
+
+# Call this function deferred and only on the main authority (server).
+func change_level(scene: PackedScene):
+	# Remove old level if any.
+	var level = $Level
+	for c in level.get_children():
+		level.remove_child(c)
+		c.queue_free()
+	# Add new level.
+	level.add_child(scene.instantiate())
+
+# The server can restart the level by pressing HOME.
+func _input(event):
+	if event.is_action("ui_home") and Input.is_action_just_pressed("ui_home"):
+		change_level.call_deferred(load("res://scenes/levels/test.tscn"))
+	
+	if event.is_action("ui_home") and Input.is_action_just_pressed("ui_home"):
+		$Level/Players.get_node("")
