@@ -9,7 +9,6 @@ extends Node
 @onready var died_label = $UI/HUD/YouDiedLabel
 @onready var crosshair_img = $UI/HUD/Crosshair
 
-
 func get_player_info() -> PlayerInfo:
 	var player_info = PlayerInfo.new()
 	player_info.name = name_edit.text
@@ -17,11 +16,9 @@ func get_player_info() -> PlayerInfo:
 	player_info.color = color_picker_button.color
 	return player_info
 
-
 func start_game():
 	main_menu.hide()
 	crosshair_img.show()
-
 
 func _ready() -> void:
 	multiplayer.connected_to_server.connect(connected_to_server)
@@ -30,40 +27,32 @@ func _ready() -> void:
 	multiplayer.peer_connected.connect(peer_connected)
 	multiplayer.peer_disconnected.connect(peer_disconnected)
 
-
 func peer_connected(id):
 	print("Player connected: " + str(id))
 
-
 func peer_disconnected(id):
 	print("Player disconnected: " + str(id))
-
 
 func connected_to_server():
 	print("Connected to server, player ID: " + str(multiplayer.get_unique_id()))
 	Server.server_send_player_info.rpc_id(1, get_player_info().to_dict())
 	print("Send PlayerInfo: ", get_player_info().to_dict())
 
-
 func connection_failed():
 	print("Connection failed")
 	main_menu.show()
-
 
 func server_disconnected():
 	print("Server disconnected")
 	Server.is_connected_to_server = false
 	main_menu.show()
 
-
 func _on_host_button_button_down() -> void:
 	print("Host button disabled!")
-
 
 func _on_join_button_button_down() -> void:
 	Server.join_game(address, port)
 	start_game()
-
 
 func _on_player_died(player: Player) -> void:
 	if player.name != str(multiplayer.get_unique_id()):
@@ -75,5 +64,9 @@ func _on_player_died(player: Player) -> void:
 	tw.set_parallel()
 	tw.set_trans(Tween.TRANS_ELASTIC)
 	tw.set_ease(Tween.EASE_IN_OUT)
-	tw.tween_property(died_label, "rotation", 2*PI, 1)
+	tw.tween_property(died_label, "rotation", 2 * PI, 1)
 	tw.tween_property(died_label, "theme_override_font_sizes/font_size", 50, 1)
+
+func _input(event):
+	if event.is_action_pressed("ui_cancel"):
+		get_tree().quit()

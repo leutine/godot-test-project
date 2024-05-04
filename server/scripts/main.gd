@@ -34,7 +34,9 @@ func change_level(scene: PackedScene):
 # The server can restart the level by pressing HOME.
 func _input(event):
 	if event.is_action("ui_home") and Input.is_action_just_pressed("ui_home"):
+		print("Level restart")
 		change_level.call_deferred(load("res://scenes/levels/test.tscn"))
-	
-	if event.is_action("ui_home") and Input.is_action_just_pressed("ui_home"):
-		$Level/Players.get_node("")
+
+	if event.is_action_pressed("ui_cancel"):
+		print("Server closed")
+		get_tree().quit()
