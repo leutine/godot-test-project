@@ -14,15 +14,15 @@ func _ready():
 	for id in multiplayer.get_peers():
 		add_player(id)
 
-
 func _exit_tree():
 	if not multiplayer.is_server():
 		return
 	multiplayer.peer_connected.disconnect(add_player)
 	multiplayer.peer_disconnected.disconnect(del_player)
 
-
 func add_player(id: int):
+	# TODO: данные от клиента поступают после того, как объект уже был создан
+	# надо поправить
 	var new_player = PLAYER.instantiate()
 	# Set player id.
 	new_player.network_id = id
@@ -34,7 +34,6 @@ func add_player(id: int):
 	new_player.position = Vector3(pos.x * SPAWN_RANDOM * randf(), 0, pos.y * SPAWN_RANDOM * randf())
 	new_player.name = str(id)
 	players.add_child(new_player, true)
-
 
 func del_player(id: int):
 	if not players.has_node(str(id)):
