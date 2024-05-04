@@ -1,8 +1,8 @@
 extends Node3D
 
 
-const Player = preload("res://scenes/player.tscn")
-const Enemy = preload("res://scenes/enemy.tscn")
+const PLAYER_TYPE = preload("res://scenes/player.tscn")
+const ENEMY_TYPE = preload("res://scenes/enemy.tscn")
 
 @onready var spawn_points = $PlayerSpawnPoint
 @onready var enemy_spawn_points = $EnemiesSpawnPoint
@@ -16,7 +16,7 @@ func _on_enemy_spawn_timer_timeout() -> void:
 	for i in enemy_spawns:
 		if i.get_child_count() != 0:
 			continue
-		var enemy = Enemy.instantiate()
+		var enemy = ENEMY_TYPE.instantiate()
 		i.add_child(enemy)
 
 

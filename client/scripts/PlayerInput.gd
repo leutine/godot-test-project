@@ -16,7 +16,7 @@ func jump():
 	jumping = true
 
 
-func _process(delta):
+func _process(_delta):
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	direction = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
