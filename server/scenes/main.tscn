@@ -5,8 +5,6 @@
 [node name="Main" type="Node"]
 script = ExtResource("1_qkd73")
 
-[node name="Server" type="Node" parent="."]
-
 [node name="Level" type="Node" parent="."]
 
 [node name="LevelSpawner" type="MultiplayerSpawner" parent="."]
