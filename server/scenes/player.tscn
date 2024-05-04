@@ -1,6 +1,38 @@
-[gd_scene load_steps=2 format=3 uid="uid://bee01fvobnh4x"]
+[gd_scene load_steps=6 format=3 uid="uid://bee01fvobnh4x"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_2yi7r"]
+[ext_resource type="Script" path="res://scripts/PlayerInput.gd" id="2_d28x5"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_b8ox8"]
+properties/0/path = NodePath("PlayerInput:direction")
+properties/0/spawn = false
+properties/0/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_6jpa6"]
+properties/0/path = NodePath(".:color")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:name_label_text")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:network_id")
+properties/2/spawn = true
+properties/2/replication_mode = 0
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_0y1uq"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_2yi7r")
+
+[node name="PlayerInput" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_b8ox8")
+script = ExtResource("2_d28x5")
+
+[node name="DataSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_6jpa6")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_0y1uq")
