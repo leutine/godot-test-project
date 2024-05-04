@@ -51,7 +51,7 @@ func join_game(address, port):
 func client_spawn_player(player_id, pos) -> void:
 	if player_id == multiplayer.get_unique_id():
 		return
-	if not Server.players.has(player_id):
+	if not players.has(player_id):
 		return
 	print("%s - client_spawn_player: %s" % [str(multiplayer.get_unique_id()), player_id])
 	player_spawned.emit(player_id, pos)

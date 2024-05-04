@@ -1,7 +1,7 @@
 extends Node
 
-@export var ADDRESS = "localhost"
-@export var PORT = 8910
+@export var address = "localhost"
+@export var port = 8910
 
 @onready var main_menu = $UI/MainMenu
 @onready var name_edit = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/NameEdit
@@ -58,7 +58,7 @@ func _on_host_button_button_down() -> void:
 
 
 func _on_join_button_button_down() -> void:
-	Server.join_game(ADDRESS, PORT)
+	Server.join_game(address, port)
 	start_game()
 
 

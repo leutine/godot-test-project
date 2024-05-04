@@ -19,7 +19,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Server="*res://multiplayer/server.gd"
+Server="*res://scripts/server.gd"
 
 [editor]
 
