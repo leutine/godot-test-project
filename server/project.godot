@@ -23,6 +23,7 @@ Server="*res://scripts/server.gd"
 
 [editor]
 
+run/main_run_args="--headless"
 version_control/autoload_on_startup=true
 
 [input]
