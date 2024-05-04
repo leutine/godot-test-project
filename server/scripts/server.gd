@@ -24,7 +24,7 @@ func server_send_player_info(data: Dictionary) -> void:
 
 
 @rpc("any_peer", "call_remote", "reliable") 
-func client_get_player_info(data: Dictionary) -> void:
+func client_get_player_info(_data: Dictionary) -> void:
 	print("Server: get_player_info")
 
 
