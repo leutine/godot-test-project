@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://co5plf8mt2t47"]
+[gd_scene load_steps=13 format=3 uid="uid://co5plf8mt2t47"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_kvr5b"]
 [ext_resource type="PackedScene" uid="uid://crk4lfpy8252t" path="res://scenes/character_model.tscn" id="2_w1n22"]
@@ -17,26 +17,31 @@ height = 1.8
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath(".:player")
+properties/1/path = NodePath("RotationRoot:rotation")
 properties/1/spawn = true
-properties/1/replication_mode = 0
-properties/2/path = NodePath("NameLabel:text")
+properties/1/replication_mode = 1
+properties/2/path = NodePath("RotationRoot/Hand:position")
 properties/2/spawn = true
-properties/2/replication_mode = 0
-properties/3/path = NodePath("RotationRoot:rotation")
+properties/2/replication_mode = 1
+properties/3/path = NodePath("RotationRoot/Hand:rotation")
 properties/3/spawn = true
 properties/3/replication_mode = 1
-properties/4/path = NodePath("RotationRoot/Hand:position")
-properties/4/spawn = true
-properties/4/replication_mode = 1
-properties/5/path = NodePath("RotationRoot/Hand:rotation")
-properties/5/spawn = true
-properties/5/replication_mode = 1
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pi10v"]
 properties/0/path = NodePath("PlayerInput:direction")
 properties/0/spawn = false
 properties/0/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_scuvy"]
+properties/0/path = NodePath(".:name_label_text")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:color")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:network_id")
+properties/2/spawn = true
+properties/2/replication_mode = 0
 
 [node name="Player" type="CharacterBody3D" groups=["players"]]
 collision_layer = 2
@@ -90,7 +95,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.602583, 0.011374, -0.78399
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_doaly")
+public_visibility = false
 
 [node name="PlayerInput" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_pi10v")
 script = ExtResource("8_uo01b")
+
+[node name="DataSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_scuvy")

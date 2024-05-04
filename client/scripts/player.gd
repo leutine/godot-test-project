@@ -1,51 +1,55 @@
 extends CharacterBody3D
 class_name Player
 
+
+signal spawned_mob
+signal died(player)
+signal spawned(player)
+
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.5
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
-
-# Set by the authority, synchronized on spawn.
-@export var player := 1 :
-	set(id):
-		player = id
-		# Give authority over the player input to the appropriate peer.
-		$PlayerInput.set_multiplayer_authority(id)
-@onready var input = $PlayerInput
-
-#@export var teleport_distance = 5.0
 var dodge_speed = 50.0
 var dodge_duration = 0.1
-
 var health: int = 20
+var default_collision_mask = collision_mask
+var is_dead: bool = false
 
-@export var rotation_speed := 12.0
-
+#@export var teleport_distance = 5.0
+@onready var rotation_speed := 12.0
 @onready var start_position = position
 @onready var gun_controller = $GunController
-@onready var name_label: Label3D = $NameLabel
 @onready var dodge: Dodge = $Dodge
 @onready var mp_sync: MultiplayerSynchronizer = $MultiplayerSynchronizer
 @onready var camera_controller: Node3D = $CameraController
 @onready var hand: Marker3D = $RotationRoot/Hand
-@onready var material: StandardMaterial3D = StandardMaterial3D.new()
 @onready var _rotation_root: Node3D = $RotationRoot
-@onready var _move_direction := Vector3.ZERO
-
 @onready var character_model: Node3D = $RotationRoot/CharacterModel
-@onready var character_model_surface: MeshInstance3D = $RotationRoot/CharacterModel/RootNode/GeneralSkeleton/Beta_Surface
 @onready var character_model_anim_player: AnimationPlayer = $RotationRoot/CharacterModel/AnimationPlayer
 
-var name_label_text = "Player"
-var default_collision_mask = collision_mask
-var color = Color.BLACK
-var is_dead: bool = false
+# Set by the authority, synchronized on spawn.
+@onready var input = $PlayerInput
+@export var network_id := 1:
+	set(id):
+		network_id = id
+		# Give authority over the player input to the appropriate peer.
+		input.set_multiplayer_authority(id)
 
-signal spawned_mob
-signal died(player)
-signal spawned(player)
+
+@onready var name_label: Label3D = $NameLabel
+@export var name_label_text := "Player":
+	set(text):
+		name_label.text = text
+
+
+@onready var character_model_surface: MeshInstance3D = $RotationRoot/CharacterModel/RootNode/GeneralSkeleton/Beta_Surface
+@export var color := Color.BLACK:
+	set(new_color):
+		var material = StandardMaterial3D.new()
+		material.albedo_color = new_color
+		character_model_surface.material_override = material
 
 
 func _physics_process(delta: float) -> void:
@@ -121,9 +125,6 @@ func _orient_character_to_direction(direction: Vector3, delta: float) -> void:
 
 
 func _ready():
-	name_label.text = name_label_text
-	material.albedo_color = color
-	character_model_surface.material_override = material
 	if not is_multiplayer_authority(): return
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	camera_controller.setup(self)
@@ -139,10 +140,8 @@ func spawn_mob(mob_position):
 	spawned_mob.emit(mob_position)
 
 
-func set_color(new_color: Color):
-	color = new_color
-	material.albedo_color = color
-	character_model_surface.material_override = material
+func set_color(_new_color: Color):
+	pass
 
 
 func set_player_name(new_name: String):
