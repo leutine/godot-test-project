@@ -27,19 +27,22 @@ func _ready() -> void:
 	multiplayer.connected_to_server.connect(connected_to_server)
 	multiplayer.connection_failed.connect(connection_failed)
 	multiplayer.server_disconnected.connect(server_disconnected)
+	multiplayer.peer_connected.connect(peer_connected)
+	multiplayer.peer_disconnected.connect(peer_disconnected)
 
 
 func peer_connected(id):
-	print("Player connected " + str(id))
+	print("Player connected: " + str(id))
 
 
 func peer_disconnected(id):
-	print("Player disconnected " + str(id))
+	print("Player disconnected: " + str(id))
 
 
 func connected_to_server():
 	print("Connected to server, player ID: " + str(multiplayer.get_unique_id()))
 	Server.server_send_player_info.rpc_id(1, get_player_info().to_dict())
+	print("Send PlayerInfo: ", get_player_info().to_dict())
 
 
 func connection_failed():
@@ -62,15 +65,15 @@ func _on_join_button_button_down() -> void:
 	start_game()
 
 
-#func _on_player_died(player: Player) -> void:
-	#if player.name != str(multiplayer.get_unique_id()):
-		#return
-	#player.is_dead = true
-	#died_label.show()
-	#crosshair_img.hide()
-	#var tw = create_tween().bind_node(died_label)
-	#tw.set_parallel()
-	#tw.set_trans(Tween.TRANS_ELASTIC)
-	#tw.set_ease(Tween.EASE_IN_OUT)
-	#tw.tween_property(died_label, "rotation", 2*PI, 1)
-	#tw.tween_property(died_label, "theme_override_font_sizes/font_size", 50, 1)
+func _on_player_died(player: Player) -> void:
+	if player.name != str(multiplayer.get_unique_id()):
+		return
+	player.is_dead = true
+	died_label.show()
+	crosshair_img.hide()
+	var tw = create_tween().bind_node(died_label)
+	tw.set_parallel()
+	tw.set_trans(Tween.TRANS_ELASTIC)
+	tw.set_ease(Tween.EASE_IN_OUT)
+	tw.tween_property(died_label, "rotation", 2*PI, 1)
+	tw.tween_property(died_label, "theme_override_font_sizes/font_size", 50, 1)
