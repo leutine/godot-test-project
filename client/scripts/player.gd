@@ -22,7 +22,6 @@ var is_dead: bool = false
 @onready var start_position = position
 @onready var gun_controller = $GunController
 @onready var dodge: Dodge = $Dodge
-@onready var mp_sync: MultiplayerSynchronizer = $MultiplayerSynchronizer
 @onready var camera_controller: Node3D = $CameraController
 @onready var hand: Marker3D = $RotationRoot/Hand
 @onready var _rotation_root: Node3D = $RotationRoot
@@ -35,7 +34,7 @@ var is_dead: bool = false
 	set(id):
 		network_id = id
 		# Give authority over the player input to the appropriate peer.
-		input.set_multiplayer_authority(id)
+		$PlayerInput.set_multiplayer_authority(id)
 
 
 @onready var name_label: Label3D = $NameLabel
@@ -132,20 +131,17 @@ func _ready():
 
 
 func _enter_tree() -> void:
+	# если убрать multiplayer_authority на всей ноде, то не будет работать инпут
 	set_multiplayer_authority(name.to_int())
+	# если у синхронайзеров указать multiplayer_authority 1, то не будет синхронизации, 
+	# но на сервере пропадет ошибка `on_sync_receive: Ignoring sync data from non-authority or for missing node.`
+	#$MultiplayerSynchronizer.set_multiplayer_authority(1)
+	#$DataSynchronizer.set_multiplayer_authority(1)
 
 
 @rpc("call_local")
 func spawn_mob(mob_position):
 	spawned_mob.emit(mob_position)
-
-
-func set_color(_new_color: Color):
-	pass
-
-
-func set_player_name(new_name: String):
-	name_label.text = new_name
 
 
 @rpc("call_local")
