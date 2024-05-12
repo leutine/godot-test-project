@@ -1,4 +1,5 @@
 extends CharacterBody3D
+class_name Player
 
 # Set by the authority, synchronized on spawn.
 @export var network_id := 1:
