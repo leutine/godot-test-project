@@ -33,5 +33,5 @@ func client_player_died(player_id: int) -> void:
 func join_game(address, port):
 	var peer = ENetMultiplayerPeer.new()
 	peer.create_client(address, port)
-	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
+	#peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
 	multiplayer.multiplayer_peer = peer

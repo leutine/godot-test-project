@@ -52,7 +52,7 @@ func start_server(port, max_clients):
 	if error != OK:
 		push_error("Server failed: " + error)
 		return
-	peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
+	#peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
 
 	multiplayer.multiplayer_peer = peer
 	print("Server started on port " + str(port))
