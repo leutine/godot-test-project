@@ -24,8 +24,8 @@ func _ready() -> void:
 	multiplayer.connected_to_server.connect(connected_to_server)
 	multiplayer.connection_failed.connect(connection_failed)
 	multiplayer.server_disconnected.connect(server_disconnected)
-	multiplayer.peer_connected.connect(peer_connected)
-	multiplayer.peer_disconnected.connect(peer_disconnected)
+	#multiplayer.peer_connected.connect(peer_connected)
+	#multiplayer.peer_disconnected.connect(peer_disconnected)
 
 func peer_connected(id):
 	print("Player connected: " + str(id))

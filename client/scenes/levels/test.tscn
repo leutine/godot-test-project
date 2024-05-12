@@ -165,7 +165,6 @@ shape = SubResource("BoxShape3D_hivm6")
 [node name="DeathFloorTimer" type="Timer" parent="CSGs/Wall4"]
 autostart = true
 
-[connection signal="spawned" from="PlayerSpawner" to="." method="_on_players_spawner_spawned"]
 [connection signal="timeout" from="EnemySpawnTimer" to="." method="_on_enemy_spawn_timer_timeout"]
 [connection signal="body_entered" from="Void" to="." method="_on_void_body_entered"]
 [connection signal="body_entered" from="CSGs/Wall4/Area3D" to="." method="_on_death_floor_body_entered"]
