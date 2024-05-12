@@ -40,7 +40,7 @@ var is_dead: bool = false
 @onready var name_label: Label3D = $NameLabel
 @export var name_label_text := "Player":
 	set(text):
-		name_label.text = text
+		$NameLabel.text = text
 
 
 @onready var character_model_surface: MeshInstance3D = $RotationRoot/CharacterModel/RootNode/GeneralSkeleton/Beta_Surface
@@ -48,7 +48,7 @@ var is_dead: bool = false
 	set(new_color):
 		var material = StandardMaterial3D.new()
 		material.albedo_color = new_color
-		character_model_surface.material_override = material
+		$RotationRoot/CharacterModel/RootNode/GeneralSkeleton/Beta_Surface.material_override = material
 
 
 func _physics_process(delta: float) -> void:
@@ -124,17 +124,19 @@ func _orient_character_to_direction(direction: Vector3, delta: float) -> void:
 
 
 func _ready():
-	if not is_multiplayer_authority(): return
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	camera_controller.setup(self)
-	camera_controller.camera.current = true
+	if network_id == multiplayer.get_unique_id():
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		camera_controller.setup(self)
+		camera_controller.camera.current = true
 
 
-func _enter_tree() -> void:
+#func _enter_tree() -> void:
 	# если убрать multiplayer_authority на всей ноде, то не будет работать инпут
-	set_multiplayer_authority(name.to_int())
+	#set_multiplayer_authority(multiplayer.get_unique_id())
 	# если у синхронайзеров указать multiplayer_authority 1, то не будет синхронизации, 
 	# но на сервере пропадет ошибка `on_sync_receive: Ignoring sync data from non-authority or for missing node.`
+	#network_id = multiplayer.get_unique_id()
+	#$PlayerInput.set_multiplayer_authority(multiplayer.get_unique_id())
 	#$MultiplayerSynchronizer.set_multiplayer_authority(1)
 	#$DataSynchronizer.set_multiplayer_authority(1)
 
