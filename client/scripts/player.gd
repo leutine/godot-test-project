@@ -130,13 +130,13 @@ func _ready():
 		camera_controller.camera.current = true
 
 
-#func _enter_tree() -> void:
+func _enter_tree() -> void:
 	# если убрать multiplayer_authority на всей ноде, то не будет работать инпут
 	#set_multiplayer_authority(multiplayer.get_unique_id())
 	# если у синхронайзеров указать multiplayer_authority 1, то не будет синхронизации, 
 	# но на сервере пропадет ошибка `on_sync_receive: Ignoring sync data from non-authority or for missing node.`
-	#network_id = multiplayer.get_unique_id()
-	#$PlayerInput.set_multiplayer_authority(multiplayer.get_unique_id())
+	network_id = multiplayer.get_unique_id()
+	$PlayerInput.set_multiplayer_authority(multiplayer.get_unique_id())
 	#$MultiplayerSynchronizer.set_multiplayer_authority(1)
 	#$DataSynchronizer.set_multiplayer_authority(1)
 
