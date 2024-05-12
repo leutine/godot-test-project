@@ -1,4 +1,4 @@
-extends Node3D
+extends Node
 
 
 const PLAYER_TYPE = preload("res://scenes/player.tscn")

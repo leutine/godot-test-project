@@ -36,7 +36,7 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_hivm6"]
 size = Vector3(4.8999, 0.178711, 4.46338)
 
-[node name="TestLevel" type="Node3D"]
+[node name="TestLevel" type="Node"]
 script = ExtResource("1_obaai")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
