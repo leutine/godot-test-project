@@ -15,8 +15,6 @@ func _ready():
 		add_player(id)
 
 func _exit_tree():
-	if not multiplayer.is_server():
-		return
 	multiplayer.peer_connected.disconnect(add_player)
 	multiplayer.peer_disconnected.disconnect(del_player)
 
