@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://57v1vgvwcwm8"]
 
-[ext_resource type="Script" path="res://scripts/sword.gd" id="1_cpql8"]
+[ext_resource type="Script" path="res://src/shared/scripts/sword.gd" id="1_cpql8"]
 [ext_resource type="ArrayMesh" uid="uid://c0c6ewr8rnsrm" path="res://assets/models/knife_sharp.obj" id="2_3nen4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_u4xo2"]
