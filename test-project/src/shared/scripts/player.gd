@@ -158,14 +158,14 @@ func respawn():
 	is_dead = false
 	health = 20
 	spawned.emit(self)
-	Server.server_player_spawned.rpc_id(1, Server.players[multiplayer.get_unique_id()])
+	Networking.server_player_spawned.rpc_id(1, Networking.players[multiplayer.get_unique_id()])
 
 
 func die():
 	visible = false
 	is_dead = true
 	died.emit(self)
-	Server.server_player_died.rpc_id(1, multiplayer.get_unique_id())
+	Networking.server_player_died.rpc_id(1, multiplayer.get_unique_id())
 
 
 func reset_rotation():

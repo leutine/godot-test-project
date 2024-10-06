@@ -1,13 +1,21 @@
 extends Node
 
-@export var address = "localhost"
+
 @export var port = 8910
+@export var address = "localhost"
 
 @onready var main_menu = $UI/MainMenu
 @onready var name_edit = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/NameEdit
 @onready var color_picker_button = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/ColorPickerButton
 @onready var died_label = $UI/HUD/YouDiedLabel
 @onready var crosshair_img = $UI/HUD/Crosshair
+
+
+signal player_died(player_id)
+
+var peer: ENetMultiplayerPeer
+var players = {}
+var is_connected_to_server: bool = false
 
 func get_player_info() -> PlayerInfo:
 	var player_info = PlayerInfo.new()
@@ -35,7 +43,7 @@ func peer_disconnected(id):
 
 func connected_to_server():
 	print("Connected to server, player ID: " + str(multiplayer.get_unique_id()))
-	Server.server_send_player_info.rpc_id(1, get_player_info().to_dict())
+	server_send_player_info.rpc_id(1, get_player_info().to_dict())
 	print("Send PlayerInfo: ", get_player_info().to_dict())
 
 func connection_failed():
@@ -44,14 +52,14 @@ func connection_failed():
 
 func server_disconnected():
 	print("Server disconnected")
-	Server.is_connected_to_server = false
+	is_connected_to_server = false
 	main_menu.show()
 
 func _on_host_button_button_down() -> void:
 	print("Host button disabled!")
 
 func _on_join_button_button_down() -> void:
-	Server.join_game(address, port)
+	join_game(address, port)
 	start_game()
 
 func _on_player_died(player: Player) -> void:
@@ -70,3 +78,36 @@ func _on_player_died(player: Player) -> void:
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		get_tree().quit()
+
+
+# Server client
+@rpc("any_peer", "call_remote", "reliable")
+func client_get_player_info(data: Dictionary) -> void:
+	print("%s - client_get_player_info: %s" % [str(multiplayer.get_remote_sender_id()), data])
+	for k in data:
+		players[k] = PlayerInfo.from_dict(data[k])
+	print("Players: ", players)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func server_send_player_info(data: Dictionary) -> void:
+	print("%s - server_send_player_info: %s" % [str(multiplayer.get_remote_sender_id()), data])
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func server_player_died(player_id: int) -> void:
+	print("%s - server_player_died: %s" % [str(multiplayer.get_remote_sender_id()), player_id])
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func client_player_died(player_id: int) -> void:
+	print("%s - client_player_died: %s" % [str(multiplayer.get_remote_sender_id()), str(player_id)])
+
+
+func join_game(address, port):
+	peer.create_client(address, port)
+	#peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
+	multiplayer.multiplayer_peer = peer
+
+func start_client():
+	peer = Networking.new().start_client()

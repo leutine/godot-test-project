@@ -2,8 +2,8 @@ extends Node
 
 
 const SPAWN_RANDOM := 50.0
-const PLAYER_TYPE = preload("res://scenes/player.tscn")
-const ENEMY_TYPE = preload("res://scenes/enemy.tscn")
+const PLAYER_TYPE = preload("res://src/shared/scenes/player.tscn")
+const ENEMY_TYPE = preload("res://src/shared/scenes/enemy.tscn")
 
 @onready var spawn_points = $PlayerSpawnPoint
 @onready var enemy_spawn_points = $EnemiesSpawnPoint
