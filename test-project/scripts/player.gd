@@ -19,7 +19,6 @@ var is_dead: bool = false
 
 #@export var teleport_distance = 5.0
 @onready var rotation_speed := 12.0
-@onready var start_position = position
 @onready var gun_controller = $GunController
 @onready var dodge: Dodge = $Dodge
 @onready var camera_controller: Node3D = $CameraController
@@ -27,9 +26,10 @@ var is_dead: bool = false
 @onready var _rotation_root: Node3D = $RotationRoot
 @onready var character_model: Node3D = $RotationRoot/CharacterModel
 @onready var character_model_anim_player: AnimationPlayer = $RotationRoot/CharacterModel/AnimationPlayer
-
-# Set by the authority, synchronized on spawn.
 @onready var input = $PlayerInput
+@onready var name_label: Label3D = $NameLabel
+@onready var character_model_surface: MeshInstance3D = $RotationRoot/CharacterModel/RootNode/GeneralSkeleton/Beta_Surface
+
 @export var network_id := 1:
 	set(id):
 		network_id = id
@@ -37,13 +37,11 @@ var is_dead: bool = false
 		$PlayerInput.set_multiplayer_authority(id)
 
 
-@onready var name_label: Label3D = $NameLabel
 @export var name_label_text := "Player":
 	set(text):
 		$NameLabel.text = text
 
 
-@onready var character_model_surface: MeshInstance3D = $RotationRoot/CharacterModel/RootNode/GeneralSkeleton/Beta_Surface
 @export var color := Color.BLACK:
 	set(new_color):
 		var material = StandardMaterial3D.new()
@@ -52,26 +50,28 @@ var is_dead: bool = false
 
 
 func _physics_process(delta: float) -> void:
-	if Server.is_connected_to_server or not is_multiplayer_authority() or is_dead: return
 	character_model_anim_player.speed_scale = 1.0
+	#is_on_floor_ = true
 	# Add the gravity.
-	if not is_on_floor():
+	#if not is_on_floor():
 		#character_model_anim_player.play("jump")
 		#character_model_anim_player.speed_scale = 2.0
-		velocity.y -= gravity * delta
+		#velocity.y -= gravity * delta
+		#is_on_floor_ = false
 
 	# Handle jump.
-	if input.jumping and is_on_floor():
+	#if input.jumping and is_on_floor():
 		#character_model_anim_player.play("jump")
 		#character_model_anim_player.speed_scale = 2.0
-		velocity.y = JUMP_VELOCITY
+		#velocity.y = JUMP_VELOCITY
+		#is_on_floor_ = false
 	
-	input.jumping = false
+	#input.jumping = false
 
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	#var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
-	var direction := (transform.basis * Vector3(input.direction.x, 0, input.direction.y)).normalized()
+	var direction: Vector3 = (transform.basis * Vector3(input.direction.x, 0, input.direction.y)).normalized()
 	
 	# Dash
 	if Input.is_action_just_pressed("dodge") and !dodge.is_dashing() and dodge.can_dash:
@@ -80,22 +80,22 @@ func _physics_process(delta: float) -> void:
 		set_collision_mask_value(3, false)
 
 	var speed = dodge_speed if dodge.is_dashing() else SPEED
-	
+
 	direction = camera_controller.global_transform.basis * direction
 	hand.look_at(camera_controller.get_aim_target())
 	if direction:
-		_orient_character_to_direction(-direction, delta)
+		_orient_character_to_direction(direction, delta)
 		if character_model_anim_player.current_animation != "running" and is_on_floor():
 			character_model_anim_player.play("running")
-		velocity.x = direction.x * speed
-		velocity.z = direction.z * speed
+		#velocity.x = direction.x * speed
+		#velocity.z = direction.z * speed
 	else:
 		if character_model_anim_player.current_animation != "idle" and is_on_floor():
 			character_model_anim_player.play("idle")
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-		velocity.z = move_toward(velocity.z, 0, SPEED)
+		#velocity.x = move_toward(velocity.x, 0, SPEED)
+		#velocity.z = move_toward(velocity.z, 0, SPEED)
 	
-	move_and_slide()
+	#move_and_slide()
 	collision_mask = default_collision_mask
 
 
@@ -131,14 +131,9 @@ func _ready():
 
 
 func _enter_tree() -> void:
-	# если убрать multiplayer_authority на всей ноде, то не будет работать инпут
-	#set_multiplayer_authority(multiplayer.get_unique_id())
-	# если у синхронайзеров указать multiplayer_authority 1, то не будет синхронизации, 
-	# но на сервере пропадет ошибка `on_sync_receive: Ignoring sync data from non-authority or for missing node.`
+	# если не указывать network_id вручную, то не работает синхронизация
+	# через сеттер не получается :(
 	network_id = multiplayer.get_unique_id()
-	$PlayerInput.set_multiplayer_authority(multiplayer.get_unique_id())
-	#$MultiplayerSynchronizer.set_multiplayer_authority(1)
-	#$DataSynchronizer.set_multiplayer_authority(1)
 
 
 @rpc("call_local")

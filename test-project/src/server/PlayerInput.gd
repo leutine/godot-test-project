@@ -5,6 +5,7 @@ extends MultiplayerSynchronizer
 
 # Synchronized property.
 @export var direction := Vector2()
+@export var is_on_floor_ := true
 
 
 @rpc("call_local")
