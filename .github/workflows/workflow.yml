@@ -1,4 +1,4 @@
-name: Build Godot Project
+name: Export
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - main
 
 env:
-  GODOT_VERSION: 4.2.2
+  GODOT_VERSION: 4.3
   EXPORT_NAME: test-project
   PROJECT_PATH: godot-test-project
   
 jobs:
-  export-windows-client:
+  client-win:
     name: Windows Client Export
     runs-on: ubuntu-20.04
     container:
-      image: barichello/godot-ci:4.2.2
+      image: barichello/godot-ci:4.3
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -32,18 +32,18 @@ jobs:
       - name: Windows Debug Build
         run: |
           mkdir -v -p build/windows
-          cd client
+          cd test-project
           godot -v --headless --export-debug "Windows Desktop Client" ../build/windows/$EXPORT_NAME-client.exe
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: windows-client
+          name: client-win
           path: build/windows
-  export-windows-server:
+  server-win:
     name: Windows Server Export
     runs-on: ubuntu-20.04
     container:
-      image: barichello/godot-ci:4.2.2
+      image: barichello/godot-ci:4.3
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -60,10 +60,10 @@ jobs:
       - name: Windows Debug Build
         run: |
           mkdir -v -p build/windows
-          cd server
+          cd test-project
           godot -v --headless --export-debug "Windows Desktop Server" ../build/windows/$EXPORT_NAME-server.exe
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: windows-server
+          name: server-win
           path: build/windows
