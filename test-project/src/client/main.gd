@@ -110,4 +110,4 @@ func join_game(address, port):
 	multiplayer.multiplayer_peer = peer
 
 func start_client():
-	peer = Networking.new().start_client()
+	peer = Networking.start_client()

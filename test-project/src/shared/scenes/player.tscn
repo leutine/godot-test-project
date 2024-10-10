@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://57v1vgvwcwm8" path="res://src/shared/scenes/sword.tscn" id="5_4qddd"]
 [ext_resource type="PackedScene" uid="uid://bs76rm217pjkt" path="res://src/shared/scenes/dodge.tscn" id="6_nuy2c"]
 [ext_resource type="Script" path="res://src/shared/scripts/CameraController.gd" id="7_sunp5"]
-[ext_resource type="Script" path="res://scripts/PlayerInput.gd" id="8_jj5ub"]
+[ext_resource type="Script" path="res://src/shared/scripts/PlayerInput.gd" id="8_jj5ub"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3oy5u"]
 radius = 0.3

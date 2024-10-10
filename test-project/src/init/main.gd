@@ -18,7 +18,7 @@ func _ready():
 
 func start_server():
 	# Load server initialization scripts
-	var server = preload("res://src/server/main.gd").new()
+	var server = preload("res://src/server/main.tscn").instantiate()
 	add_child(server) # Ensure it's part of the scene tree
 
 	# Start the server logic

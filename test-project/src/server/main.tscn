@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://cokwga1jwpkt2"]
+
+[ext_resource type="Script" path="res://src/server/main.gd" id="1_x7t38"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_x7t38")
+
+[node name="Level" type="Node" parent="."]
+
+[node name="LevelSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://src/shared/levels/test_level/test.tscn")
+spawn_path = NodePath("../Level")
+spawn_limit = 1

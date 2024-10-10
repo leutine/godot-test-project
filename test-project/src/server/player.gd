@@ -1,5 +1,4 @@
 extends CharacterBody3D
-class_name Player
 
 var GRAVITY: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 const JUMP_VELOCITY = 4.5

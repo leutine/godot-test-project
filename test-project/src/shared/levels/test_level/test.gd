@@ -60,9 +60,9 @@ func add_player(id: int):
 	var new_player = PLAYER_TYPE.instantiate()
 	# Set player id.
 	new_player.network_id = id
-	if Server.players.has(id):
-		new_player.name_label_text = Server.players[id].name
-		new_player.color = Server.players[id].color
+	if Networking.players.has(id):
+		new_player.name_label_text = Networking.players[id].name
+		new_player.color = Networking.players[id].color
 	# Randomize character position.
 	var pos := Vector2.from_angle(randf() * 2 * PI)
 	new_player.position = Vector3(pos.x * SPAWN_RANDOM * randf(), 0, pos.y * SPAWN_RANDOM * randf())

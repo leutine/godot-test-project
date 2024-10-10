@@ -143,13 +143,13 @@ func spawn_mob(mob_position):
 
 @rpc("call_local")
 func swap_weapon():
-#	if not is_multiplayer_authority(): return
+	if not is_multiplayer_authority(): return
 	gun_controller.swap()
 
 
 @rpc("call_local")
 func shoot():
-#	if not is_multiplayer_authority(): return
+	if not is_multiplayer_authority(): return
 	gun_controller.shoot()
 
 
@@ -158,14 +158,14 @@ func respawn():
 	is_dead = false
 	health = 20
 	spawned.emit(self)
-	Networking.server_player_spawned.rpc_id(1, Networking.players[multiplayer.get_unique_id()])
+	#Networking.server_player_spawned.rpc_id(1, Networking.players[multiplayer.get_unique_id()])
 
 
 func die():
 	visible = false
 	is_dead = true
 	died.emit(self)
-	Networking.server_player_died.rpc_id(1, multiplayer.get_unique_id())
+	#Networking.server_player_died.rpc_id(1, multiplayer.get_unique_id())
 
 
 func reset_rotation():

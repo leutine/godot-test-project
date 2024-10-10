@@ -17,6 +17,10 @@ config/features=PackedStringArray("4.3", "Forward Plus")
 boot_splash/show_image=false
 config/icon="res://icon.svg"
 
+[autoload]
+
+Networking="*res://src/init/networking.gd"
+
 [display]
 
 window/size/always_on_top=true
@@ -24,6 +28,14 @@ window/size/always_on_top=true
 [editor]
 
 version_control/autoload_on_startup=true
+
+[file_customization]
+
+folder_colors={
+"res://src/client/": "blue",
+"res://src/server/": "green",
+"res://src/shared/": "purple"
+}
 
 [input]
 

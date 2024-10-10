@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://src/client/main.gd" id="1_6kpxg"]
 [ext_resource type="Texture2D" uid="uid://dnfii75r70dnu" path="res://assets/textures/crosshair161.png" id="2_gq47b"]
 
-[node name="ClientMain" type="Node"]
+[node name="Main" type="Node"]
 script = ExtResource("1_6kpxg")
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -94,6 +94,7 @@ text = "Join"
 [node name="Level" type="Node" parent="."]
 
 [node name="LevelSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://src/shared/levels/test_level/test.tscn")
 spawn_path = NodePath("../Level")
 spawn_limit = 1
 
