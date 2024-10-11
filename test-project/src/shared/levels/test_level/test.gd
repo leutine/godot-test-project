@@ -56,7 +56,7 @@ func add_player(id: int):
 	# надо поправить
 	var new_player = PLAYER_TYPE.instantiate()
 	# Set player id.
-	new_player.network_id = id
+	#new_player.network_id = id
 	if Networking.players.has(id):
 		new_player.name_label_text = Networking.players[id].name
 		new_player.color = Networking.players[id].color

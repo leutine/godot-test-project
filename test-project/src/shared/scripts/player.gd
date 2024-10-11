@@ -97,11 +97,11 @@ func _physics_process(delta: float) -> void:
 	
 	#move_and_slide()
 	
-	if not input.is_on_floor_:
+	if not is_on_floor():
 		velocity.y -= gravity * delta
 
 	# Handle jump.
-	if input.jumping and input.is_on_floor_:
+	if input.jumping and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
 	# Reset jump state.
@@ -151,10 +151,10 @@ func _ready():
 		camera_controller.camera.current = true
 
 
-func _enter_tree() -> void:
+#func _enter_tree() -> void:
 	# если не указывать network_id вручную, то не работает синхронизация
 	# через сеттер не получается :(
-	network_id = multiplayer.get_unique_id()
+	#network_id = multiplayer.get_unique_id()
 
 
 @rpc("call_local")

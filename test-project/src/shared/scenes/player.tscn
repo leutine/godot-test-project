@@ -17,9 +17,6 @@ height = 1.8
 properties/0/path = NodePath("PlayerInput:direction")
 properties/0/spawn = false
 properties/0/replication_mode = 1
-properties/1/path = NodePath("PlayerInput:is_on_floor_")
-properties/1/spawn = true
-properties/1/replication_mode = 2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_wjk8y"]
 properties/0/path = NodePath(".:name_label_text")
@@ -34,9 +31,6 @@ properties/2/replication_mode = 0
 properties/3/path = NodePath(".:position")
 properties/3/spawn = true
 properties/3/replication_mode = 1
-properties/4/path = NodePath(".:velocity")
-properties/4/spawn = true
-properties/4/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D" groups=["players"]]
 collision_layer = 2

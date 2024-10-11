@@ -13,8 +13,6 @@ extends Node
 
 signal player_died(player_id)
 
-var peer: ENetMultiplayerPeer
-var players = {}
 var is_connected_to_server: bool = false
 
 func get_player_info() -> PlayerInfo:
@@ -81,35 +79,28 @@ func _input(event):
 	if event.is_action_pressed("primary_action"):
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-
 # Server client
 @rpc("any_peer", "call_remote", "reliable")
 func client_get_player_info(data: Dictionary) -> void:
 	print("%s - client_get_player_info: %s" % [str(multiplayer.get_remote_sender_id()), data])
 	for k in data:
-		players[k] = PlayerInfo.from_dict(data[k])
-	print("Players: ", players)
-
+		Networking.players[k] = PlayerInfo.from_dict(data[k])
+	print("Players: ", Networking.players)
 
 @rpc("any_peer", "call_remote", "reliable")
 func server_send_player_info(data: Dictionary) -> void:
 	print("%s - server_send_player_info: %s" % [str(multiplayer.get_remote_sender_id()), data])
 
-
 @rpc("any_peer", "call_remote", "reliable")
 func server_player_died(player_id: int) -> void:
 	print("%s - server_player_died: %s" % [str(multiplayer.get_remote_sender_id()), player_id])
-
 
 @rpc("any_peer", "call_remote", "reliable")
 func client_player_died(player_id: int) -> void:
 	print("%s - client_player_died: %s" % [str(multiplayer.get_remote_sender_id()), str(player_id)])
 
-
 func join_game(address, port):
-	peer.create_client(address, port)
-	#peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
-	multiplayer.multiplayer_peer = peer
+	Networking.start_client(address, port)
 
 func start():
-	peer = Networking.start_client()
+	pass

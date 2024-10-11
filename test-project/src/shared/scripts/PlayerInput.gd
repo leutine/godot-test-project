@@ -5,7 +5,6 @@ extends MultiplayerSynchronizer
 
 # Synchronized property.
 @export var direction := Vector2()
-@export var is_on_floor_ := true
 
 func _ready():
 	# Only process for the local player.
@@ -21,6 +20,3 @@ func _process(_delta):
 	direction = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	if Input.is_action_just_pressed("jump"):
 		jump.rpc()
-
-func _physics_process(delta: float) -> void:
-	is_on_floor_ = owner.is_on_floor()

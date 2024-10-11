@@ -15,14 +15,15 @@ func start_server():
 	if error != OK:
 		push_error("Server failed: %s" % (error))
 		return
-	#peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
-
+	# peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
 	multiplayer.multiplayer_peer = peer
 	print("Server started on port " + str(port))
 
-func start_client() -> ENetMultiplayerPeer:
-	return ENetMultiplayerPeer.new()
-	#peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
+func start_client(address, port):
+	var peer = ENetMultiplayerPeer.new()
+	peer.create_client(address, port)
+	# peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
+	multiplayer.multiplayer_peer = peer
 
 func convert_players():
 	var result = {}
