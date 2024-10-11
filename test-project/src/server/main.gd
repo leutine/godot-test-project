@@ -2,7 +2,7 @@ extends Node
 
 
 
-func start_server():
+func start():
 	Networking.start_server()
 	start_game()
 

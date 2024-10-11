@@ -22,7 +22,7 @@ func start_server():
 	add_child(server) # Ensure it's part of the scene tree
 
 	# Start the server logic
-	server.start_server()
+	server.start()
 	print("Server started.")
 
 func start_client():
@@ -31,7 +31,7 @@ func start_client():
 	add_child(client) # Ensure it's part of the scene tree
 
 	# Start the client logic
-	client.start_client()
+	client.start()
 	print("Client started.")
 
 # Helper function to get command line arguments

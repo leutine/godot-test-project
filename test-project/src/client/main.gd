@@ -111,5 +111,5 @@ func join_game(address, port):
 	#peer.get_host().compress(ENetConnection.COMPRESS_RANGE_CODER)
 	multiplayer.multiplayer_peer = peer
 
-func start_client():
+func start():
 	peer = Networking.start_client()
