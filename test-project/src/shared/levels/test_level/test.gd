@@ -46,9 +46,6 @@ func _ready():
 	multiplayer.peer_connected.connect(add_player)
 	multiplayer.peer_disconnected.connect(del_player)
 
-	# Spawn already connected players.
-	for id in multiplayer.get_peers():
-		add_player(id)
 
 func _exit_tree():
 	multiplayer.peer_connected.disconnect(add_player)
