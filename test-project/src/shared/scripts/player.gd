@@ -96,6 +96,27 @@ func _physics_process(delta: float) -> void:
 		#velocity.z = move_toward(velocity.z, 0, SPEED)
 	
 	#move_and_slide()
+	
+	if not input.is_on_floor_:
+		velocity.y -= gravity * delta
+
+	# Handle jump.
+	if input.jumping and input.is_on_floor_:
+		velocity.y = JUMP_VELOCITY
+
+	# Reset jump state.
+	input.jumping = false
+
+	# Handle movement.
+	#var direction := (transform.basis * Vector3(input.direction.x, 0, input.direction.y)).normalized()
+	if direction:
+		velocity.x = direction.x * SPEED
+		velocity.z = direction.z * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+		velocity.z = move_toward(velocity.z, 0, SPEED)
+
+	move_and_slide()
 	collision_mask = default_collision_mask
 
 
