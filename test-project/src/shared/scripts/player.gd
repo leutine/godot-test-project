@@ -84,7 +84,7 @@ func _physics_process(delta: float) -> void:
 	direction = camera_controller.global_transform.basis * direction
 	hand.look_at(camera_controller.get_aim_target())
 	if direction:
-		_orient_character_to_direction(direction, delta)
+		_orient_character_to_direction(-direction, delta)
 		if character_model_anim_player.current_animation != "running" and is_on_floor():
 			character_model_anim_player.play("running")
 		#velocity.x = direction.x * speed
