@@ -77,7 +77,9 @@ func _on_player_died(player: Player) -> void:
 
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
-		get_tree().quit()
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if event.is_action_pressed("primary_action"):
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
 # Server client
