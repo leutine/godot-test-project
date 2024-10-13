@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://co5plf8mt2t47"]
+[gd_scene load_steps=13 format=3 uid="uid://co5plf8mt2t47"]
 
 [ext_resource type="Script" path="res://src/shared/scripts/player.gd" id="1_phhq7"]
 [ext_resource type="PackedScene" uid="uid://crk4lfpy8252t" path="res://src/shared/scenes/character_model.tscn" id="2_oiqxx"]
@@ -13,10 +13,24 @@
 radius = 0.3
 height = 1.8
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_sx2no"]
+properties/0/path = NodePath("Camera3D:rotation")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("CameraArm:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("CameraArm/CameraThirdPersonPivot:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_pi10v"]
 properties/0/path = NodePath("PlayerInput:direction")
-properties/0/spawn = false
+properties/0/spawn = true
 properties/0/replication_mode = 1
+properties/1/path = NodePath("PlayerInput:jumping")
+properties/1/spawn = false
+properties/1/replication_mode = 2
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_wjk8y"]
 properties/0/path = NodePath(".:name_label_text")
@@ -25,12 +39,9 @@ properties/0/replication_mode = 2
 properties/1/path = NodePath(".:color")
 properties/1/spawn = true
 properties/1/replication_mode = 2
-properties/2/path = NodePath(".:network_id")
+properties/2/path = NodePath(".:position")
 properties/2/spawn = true
-properties/2/replication_mode = 0
-properties/3/path = NodePath(".:position")
-properties/3/spawn = true
-properties/3/replication_mode = 1
+properties/2/replication_mode = 1
 
 [node name="Player" type="CharacterBody3D" groups=["players"]]
 collision_layer = 2
@@ -81,6 +92,9 @@ margin = 0.2
 
 [node name="CameraThirdPersonPivot" type="Marker3D" parent="CameraController/CameraArm"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.602583, 0.011374, -0.783995)
+
+[node name="CameraSynchronizer" type="MultiplayerSynchronizer" parent="CameraController"]
+replication_config = SubResource("SceneReplicationConfig_sx2no")
 
 [node name="PlayerInput" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_pi10v")

@@ -5,21 +5,21 @@ const SPAWN_RANDOM := 50.0
 const PLAYER_TYPE = preload("res://src/shared/scenes/player.tscn")
 const ENEMY_TYPE = preload("res://src/shared/scenes/enemy.tscn")
 
-@onready var spawn_points = $PlayerSpawnPoint
 @onready var enemy_spawn_points = $EnemiesSpawnPoint
 @onready var death_floor_timer: Timer = $CSGs/Wall4/DeathFloorTimer
 @onready var players = $Players
+@onready var enemies = $Enemies
 
 var death_floor_bodies: Array[Node3D] = []
 
 
 func _on_enemy_spawn_timer_timeout() -> void:
-	var enemy_spawns = get_tree().get_nodes_in_group("EnemySpawnPoint")
-	for i in enemy_spawns:
-		if i.get_child_count() != 0:
+	for point in enemy_spawn_points.get_children():
+		if enemies.get_node_or_null("./%s" % (point.name)):
 			continue
 		var enemy = ENEMY_TYPE.instantiate()
-		i.add_child(enemy)
+		enemy.name = point.name
+		enemies.add_child(enemy)
 
 
 func _on_void_body_entered(body: Node3D) -> void:
@@ -47,26 +47,22 @@ func _ready():
 	multiplayer.peer_disconnected.connect(del_player)
 
 
-func _exit_tree():
-	multiplayer.peer_connected.disconnect(add_player)
-	multiplayer.peer_disconnected.disconnect(del_player)
-
+# TODO: данные от клиента поступают после того, как объект уже был создан
 func add_player(id: int):
-	# TODO: данные от клиента поступают после того, как объект уже был создан
-	# надо поправить
-	var new_player = PLAYER_TYPE.instantiate()
-	# Set player id.
-	#new_player.network_id = id
-	if Networking.players.has(id):
-		new_player.name_label_text = Networking.players[id].name
-		new_player.color = Networking.players[id].color
-	# Randomize character position.
-	var pos := Vector2.from_angle(randf() * 2 * PI)
-	new_player.position = Vector3(pos.x * SPAWN_RANDOM * randf(), 0, pos.y * SPAWN_RANDOM * randf())
-	new_player.name = str(id)
-	players.add_child(new_player, true)
+	print("Add player %s to level" % id)
+	var player = PLAYER_TYPE.instantiate()
+	player.name = str(id)
+	_init_player(player, id)
+	players.add_child(player)
 
 func del_player(id: int):
 	if not players.has_node(str(id)):
 		return
 	players.get_node(str(id)).queue_free()
+
+func _init_player(player: Player, id: int) -> void:
+	player.position = Vector3(randi_range(-2, 2), 1, randi_range(-2, 2))
+
+	if Networking.players.has(id):
+		player.name_label_text = Networking.players[id].name
+		player.color = Networking.players[id].color

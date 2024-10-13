@@ -32,31 +32,6 @@ func _input(event):
 		change_level.call_deferred(load("res://src/shared/levels/test_level/test.tscn"))
 
 	if event.is_action_pressed("ui_cancel"):
+		multiplayer.multiplayer_peer = null
 		print("Server closed")
 		get_tree().quit()
-
-
-# Server
-@rpc("any_peer", "call_remote", "reliable")
-func server_send_player_info(data: Dictionary) -> void:
-	var player_info = PlayerInfo.from_dict(data)
-
-	if not Networking.players.has(player_info.id):
-		Networking.players[player_info.id] = player_info
-
-	print_debug("PLAYERS: ", Networking.convert_players())
-	#client_get_player_info.rpc(convert_players())
-
-@rpc("any_peer", "call_remote", "reliable")
-func client_get_player_info(_data: Dictionary) -> void:
-	print("Server: get_player_info")
-
-@rpc("any_peer", "call_remote", "reliable")
-func server_player_died(player_id: int) -> void:
-	print("server_player_died: %s" % str(player_id))
-	client_player_died.rpc(player_id)
-
-
-@rpc("any_peer", "call_remote", "reliable")
-func client_player_died(player_id: int) -> void:
-	print("client_player_died: %s" % str(player_id))

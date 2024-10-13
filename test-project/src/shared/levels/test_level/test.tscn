@@ -60,24 +60,6 @@ spawn_limit = 20
 
 [node name="Players" type="Node" parent="."]
 
-[node name="PlayerSpawnPoint" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-
-[node name="0" type="Node3D" parent="PlayerSpawnPoint" groups=["PlayerSpawnPoint"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.154, 0, 7.114)
-
-[node name="1" type="Node3D" parent="PlayerSpawnPoint" groups=["PlayerSpawnPoint"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.477, 0, 6.05)
-
-[node name="2" type="Node3D" parent="PlayerSpawnPoint" groups=["PlayerSpawnPoint"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.92, 0, -1.643)
-
-[node name="3" type="Node3D" parent="PlayerSpawnPoint" groups=["PlayerSpawnPoint"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.995, 0, 2.919)
-
-[node name="4" type="Node3D" parent="PlayerSpawnPoint" groups=["PlayerSpawnPoint"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.8556, 0, 3.87449)
-
 [node name="EnemySpawnTimer" type="Timer" parent="."]
 wait_time = 5.0
 autostart = true

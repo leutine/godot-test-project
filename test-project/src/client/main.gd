@@ -5,15 +5,13 @@ extends Node
 @export var address = "localhost"
 
 @onready var main_menu = $UI/MainMenu
+@onready var address_edit = $UI/MainMenu/MarginContainer/VBoxContainer/AddressEdit
 @onready var name_edit = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/NameEdit
 @onready var color_picker_button = $UI/MainMenu/MarginContainer/VBoxContainer/HBoxContainer/ColorPickerButton
 @onready var died_label = $UI/HUD/YouDiedLabel
 @onready var crosshair_img = $UI/HUD/Crosshair
 
 
-signal player_died(player_id)
-
-var is_connected_to_server: bool = false
 
 func get_player_info() -> PlayerInfo:
 	var player_info = PlayerInfo.new()
@@ -27,36 +25,17 @@ func start_game():
 	crosshair_img.show()
 
 func _ready() -> void:
-	multiplayer.connected_to_server.connect(connected_to_server)
-	multiplayer.connection_failed.connect(connection_failed)
-	multiplayer.server_disconnected.connect(server_disconnected)
-	#multiplayer.peer_connected.connect(peer_connected)
-	#multiplayer.peer_disconnected.connect(peer_disconnected)
+	Networking.server_disconnected.connect(_on_server_disconnected)
 
-func peer_connected(id):
-	print("Player connected: " + str(id))
-
-func peer_disconnected(id):
-	print("Player disconnected: " + str(id))
-
-func connected_to_server():
-	print("Connected to server, player ID: " + str(multiplayer.get_unique_id()))
-	server_send_player_info.rpc_id(1, get_player_info().to_dict())
-	print("Send PlayerInfo: ", get_player_info().to_dict())
-
-func connection_failed():
-	print("Connection failed")
-	main_menu.show()
-
-func server_disconnected():
+func _on_server_disconnected():
 	print("Server disconnected")
-	is_connected_to_server = false
 	main_menu.show()
 
 func _on_host_button_button_down() -> void:
 	print("Host button disabled!")
 
 func _on_join_button_button_down() -> void:
+	# var address = address_edit.text
 	join_game(address, port)
 	start_game()
 
@@ -79,27 +58,8 @@ func _input(event):
 	if event.is_action_pressed("primary_action"):
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-# Server client
-@rpc("any_peer", "call_remote", "reliable")
-func client_get_player_info(data: Dictionary) -> void:
-	print("%s - client_get_player_info: %s" % [str(multiplayer.get_remote_sender_id()), data])
-	for k in data:
-		Networking.players[k] = PlayerInfo.from_dict(data[k])
-	print("Players: ", Networking.players)
-
-@rpc("any_peer", "call_remote", "reliable")
-func server_send_player_info(data: Dictionary) -> void:
-	print("%s - server_send_player_info: %s" % [str(multiplayer.get_remote_sender_id()), data])
-
-@rpc("any_peer", "call_remote", "reliable")
-func server_player_died(player_id: int) -> void:
-	print("%s - server_player_died: %s" % [str(multiplayer.get_remote_sender_id()), player_id])
-
-@rpc("any_peer", "call_remote", "reliable")
-func client_player_died(player_id: int) -> void:
-	print("%s - client_player_died: %s" % [str(multiplayer.get_remote_sender_id()), str(player_id)])
-
 func join_game(address, port):
+	Networking.player_info = get_player_info()
 	Networking.start_client(address, port)
 
 func start():

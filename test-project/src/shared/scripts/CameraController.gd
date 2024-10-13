@@ -27,6 +27,10 @@ var _anchor: CharacterBody3D
 var _euler_rotation: Vector3
 
 
+func _ready() -> void:
+	if is_multiplayer_authority():
+		camera.current = true
+
 func _unhandled_input(event: InputEvent) -> void:
 	_mouse_input = event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED
 	if _mouse_input:
@@ -47,12 +51,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		_aim_target = _camera_raycast.global_transform * _camera_raycast.target_position
 		_aim_collider = null
-
-	# Set camera controller to current ground level for the character
-	#var target_position := _anchor.global_position + _offset
-	#target_position.y = lerp(global_position.y, _anchor._ground_height, 0.1)
-	#target_position.y = lerp(global_position.y, 1.0, 0.1)
-	#global_position = target_position
 
 	# Rotates camera using euler rotation
 	_euler_rotation.x += _tilt_input * delta
@@ -82,8 +80,8 @@ func set_pivot(pivot_type: CAMERA_PIVOT) -> void:
 
 	match(pivot_type):
 		CAMERA_PIVOT.OVER_SHOULDER:
-			_over_shoulder_pivot.look_at(_aim_target)
 			_pivot = _over_shoulder_pivot
+			_pivot.look_at(_aim_target)
 		CAMERA_PIVOT.THIRD_PERSON:
 			_pivot = _third_person_pivot
 
@@ -99,3 +97,9 @@ func get_aim_collider() -> Node:
 		return _aim_collider
 	else:
 		return null
+
+func get_camera_rotation_basis() -> Basis:
+	return camera.global_transform.basis
+
+func get_camera_mount_quaternion() -> Quaternion:
+	return camera.global_transform.basis.get_rotation_quaternion()
