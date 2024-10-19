@@ -1,1 +1,0 @@
-1. перенести инициализацию клиента из src/init/main в src/client/main
