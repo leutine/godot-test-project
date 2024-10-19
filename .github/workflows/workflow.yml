@@ -34,7 +34,7 @@ jobs:
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "Client" "$EXPORT_DIR/windows/$EXPORT_NAME-client.exe"
       - name: Upload Artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: client-win64
           path: build/windows
@@ -62,7 +62,7 @@ jobs:
           cd $PROJECT_PATH
           godot --headless --verbose --export-release "Server" "$EXPORT_DIR/windows/$EXPORT_NAME-server.exe"
       - name: Upload Artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: server-win64
           path: build/windows
