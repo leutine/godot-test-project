@@ -7,14 +7,14 @@ Test project to learn Godot engine
 ---
 
 ## Requirements
-- [Godot 4.2.2](https://godotengine.org/download)
+- [Godot 4.3](https://godotengine.org/download)
 
 ## First launch
 - Clone project
-- Launch first Godot instance
-- Open `server` subproject
-- Launch second Godot instance
-- Open `client` subproject
-- Run server instance project (F5)
-- Run client instance project (F5)
+- Launch Godot
+- Open project
+- Setup multiple debug instances
+  - 1 instance for server with `--mode server`
+  - other can be blank
+- Run project (F5)
 - Click `Join` in client menu
