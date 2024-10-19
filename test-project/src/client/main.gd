@@ -11,11 +11,11 @@ extends Node
 @onready var died_label = $UI/HUD/YouDiedLabel
 @onready var crosshair_img = $UI/HUD/Crosshair
 
-
+var is_game_started: bool = false
 
 func get_player_info() -> PlayerInfo:
 	var player_info = PlayerInfo.new()
-	player_info.name = name_edit.text
+	player_info.label = name_edit.text
 	player_info.id = multiplayer.get_unique_id()
 	player_info.color = color_picker_button.color
 	return player_info
@@ -23,6 +23,8 @@ func get_player_info() -> PlayerInfo:
 func start_game():
 	main_menu.hide()
 	crosshair_img.show()
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	is_game_started = true
 
 func _ready() -> void:
 	Networking.server_disconnected.connect(_on_server_disconnected)
@@ -39,6 +41,7 @@ func _on_join_button_button_down() -> void:
 	join_game(address, port)
 	start_game()
 
+# TODO: убрать из мейна куда-нибудь в более подходящее место
 func _on_player_died(player: Player) -> void:
 	if player.name != str(multiplayer.get_unique_id()):
 		return
@@ -55,7 +58,7 @@ func _on_player_died(player: Player) -> void:
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	if event.is_action_pressed("primary_action"):
+	if is_game_started and event.is_action_pressed("primary_action"):
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func join_game(address, port):

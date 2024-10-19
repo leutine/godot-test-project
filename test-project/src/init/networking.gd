@@ -6,9 +6,9 @@ const DEFAULT_SERVER_IP = "localhost"
 const MAX_CONNECTIONS = 5
 
 var players = {}
-var player_info = PlayerInfo.new()
+var player_info: PlayerInfo = PlayerInfo.new()
 
-signal player_connected(peer_id: int, player_info: PlayerInfo)
+signal player_registered(peer_id: int)
 signal player_disconnected(peer_id: int)
 signal server_disconnected
 
@@ -50,28 +50,31 @@ func _ready():
 @rpc("any_peer", "reliable")
 func _register_player(new_player_data):
 	var new_player_id = multiplayer.get_remote_sender_id()
-	var new_player_info = PlayerInfo.from_dict(new_player_data)
-	players[new_player_id] = new_player_info
-	player_connected.emit(new_player_id, new_player_info)
+	print("_register_player on %s" % new_player_id)
+	players[new_player_id] = PlayerInfo.from_dict(new_player_data)
+	player_registered.emit(new_player_id)
 
 
 # Signal handlers
 func _on_player_connected(id):
-	print("Player connected " + str(id))
-	var player_info_data = player_info.to_dict()
-	_register_player.rpc_id(id, player_info_data)
+	print("Player connected %s" % id)
+	# var player_info_data = player_info.to_dict()
+	# _register_player.rpc_id(id, player_info_data)
 	print("Current players: ", convert_players())
 
 func _on_player_disconnected(id):
-	print("Player disconnected " + str(id))
+	print("Player disconnected %s" % id)
 	players.erase(id)
 	player_disconnected.emit(id)
-	print("Current players: ", convert_players())
+	# print("Current players: ", convert_players())
 
 func _on_connected_ok():
 	var peer_id = multiplayer.get_unique_id()
+	print("_on_connected_ok %s" % peer_id)
+	player_info.id = peer_id
 	players[peer_id] = player_info
-	player_connected.emit(peer_id, player_info)
+	_register_player.rpc_id(1, player_info.to_dict())
+	player_registered.emit(peer_id, player_info)
 
 func _on_connected_fail():
 	multiplayer.multiplayer_peer = null

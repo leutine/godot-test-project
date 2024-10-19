@@ -1,12 +1,12 @@
 class_name PlayerInfo
 
-var id: int = 0
-var name: String = "Player"
+var id: int = -1
+var label: String = "Player"
 var color: Color = Color.BLACK
 
 
 func to_dict() -> Dictionary:
-	return {"id": id, "name": name, "color": color}
+	return {"id": id, "label": label, "color": color}
 
 
 func to_json() -> String:
@@ -16,7 +16,7 @@ func to_json() -> String:
 static func from_dict(dict: Dictionary) -> PlayerInfo:
 	var player_info = PlayerInfo.new()
 	player_info.id = dict.id
-	player_info.name = dict.name
+	player_info.label = dict.label
 	player_info.color = dict.color
 	return player_info
 
