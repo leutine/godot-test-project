@@ -1,0 +1,154 @@
+[gd_scene load_steps=10 format=3 uid="uid://ddwv4x0r6b241"]
+
+[ext_resource type="Script" path="res://src/shared/scripts/gun.gd" id="1_lr64o"]
+[ext_resource type="PackedScene" uid="uid://5ght8vq5k16w" path="res://src/shared/scenes/bullet.tscn" id="2_liryq"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_p7xbe"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_elcwm"]
+albedo_color = Color(0.156863, 0.156863, 0.156863, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0gkao"]
+transparency = 1
+albedo_color = Color(0.952941, 0.854902, 0.113725, 0.811765)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wceg2"]
+material = SubResource("StandardMaterial3D_0gkao")
+size = Vector3(0.05, 0.05, -0.25)
+
+[sub_resource type="Animation" id="Animation_nqsee"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BodyPivot/Body/CPUParticles3D:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BodyPivot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, -0.03)]
+}
+
+[sub_resource type="Animation" id="Animation_4dptx"]
+resource_name = "shoot"
+length = 0.3
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BodyPivot:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.581177, 0, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BodyPivot:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(0.112656, 12.5534, 0.307786),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, -0.09), Vector3(0, 0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BodyPivot/Body/CPUParticles3D:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tgqaa"]
+_data = {
+"RESET": SubResource("Animation_nqsee"),
+"shoot": SubResource("Animation_4dptx")
+}
+
+[node name="Gun" type="Node3D"]
+transform = Transform3D(-0.646061, 0, 8.74228e-08, 0, 1, 0, -5.64804e-08, 0, -1, 0, 0, 0)
+script = ExtResource("1_lr64o")
+bullet = ExtResource("2_liryq")
+
+[node name="BodyPivot" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.03)
+
+[node name="ShootingMarker" type="Marker3D" parent="BodyPivot"]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, -1.04134e-07, 0.0815604, 0.346062)
+
+[node name="Body" type="Node3D" parent="BodyPivot"]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -5.25908e-08, 0.0776274, 0.11135)
+
+[node name="Barrel" type="MeshInstance3D" parent="BodyPivot/Body"]
+transform = Transform3D(0.473, 0, 0, 0, 0.467, 0, 0, 0, 1.2, 0, 0, 0)
+mesh = SubResource("BoxMesh_p7xbe")
+skeleton = NodePath("../../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_elcwm")
+
+[node name="Muzzle" type="MeshInstance3D" parent="BodyPivot/Body"]
+transform = Transform3D(0.395122, 0, 0, 0, 0.32401, 0, 0, 0, 0.320367, 0, 0, 0.54741)
+mesh = SubResource("BoxMesh_p7xbe")
+skeleton = NodePath("../../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_elcwm")
+
+[node name="Handle" type="MeshInstance3D" parent="BodyPivot/Body"]
+transform = Transform3D(-1.09279e-08, 7.57103e-09, -0.420714, 0.433013, 0.1, 0, 0.25, -0.173205, -1.839e-08, 0, -0.326939, -0.494925)
+mesh = SubResource("BoxMesh_p7xbe")
+skeleton = NodePath("../../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_elcwm")
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="BodyPivot/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.725079)
+emitting = false
+lifetime = 0.15
+one_shot = true
+explosiveness = 0.5
+randomness = 0.5
+local_coords = true
+mesh = SubResource("BoxMesh_wceg2")
+direction = Vector3(0, 0, 1)
+spread = 20.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_max = 10.0
+scale_amount_max = 2.0
+
+[node name="AimRayCast" type="RayCast3D" parent="BodyPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 1.42109e-14, 0, 1, 4.55375e-08, 0.0793149, 0.336526)
+exclude_parent = false
+target_position = Vector3(0, 0, 100)
+collision_mask = 7
+
+[node name="ROFTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_tgqaa")
+}
+
+[connection signal="timeout" from="ROFTimer" to="." method="_on_timer_timeout"]

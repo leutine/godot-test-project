@@ -1,0 +1,89 @@
+[gd_scene load_steps=7 format=3 uid="uid://57v1vgvwcwm8"]
+
+[ext_resource type="Script" path="res://src/shared/scripts/sword.gd" id="1_cpql8"]
+[ext_resource type="ArrayMesh" uid="uid://c0c6ewr8rnsrm" path="res://assets/models/knife_sharp.obj" id="2_3nen4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u4xo2"]
+size = Vector3(0.456779, 1.37012, 0.539978)
+
+[sub_resource type="Animation" id="Animation_j5deb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Pivot:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_scflt"]
+resource_name = "shoot"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Pivot:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, -0.523599), Vector3(-0.349066, 2.0944, -1.74533)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Pivot/KnifeSharp/HitboxArea/Hitbox:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wqnpr"]
+_data = {
+"RESET": SubResource("Animation_j5deb"),
+"shoot": SubResource("Animation_scflt")
+}
+
+[node name="Sword" type="Node3D"]
+script = ExtResource("1_cpql8")
+
+[node name="Pivot" type="Marker3D" parent="."]
+
+[node name="KnifeSharp" type="MeshInstance3D" parent="Pivot"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.188804, 0)
+mesh = ExtResource("2_3nen4")
+skeleton = NodePath("../..")
+
+[node name="HitboxArea" type="Area3D" parent="Pivot/KnifeSharp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14516, 0)
+collision_layer = 2
+collision_mask = 4
+monitorable = false
+
+[node name="Hitbox" type="CollisionShape3D" parent="Pivot/KnifeSharp/HitboxArea"]
+transform = Transform3D(0.315, 0, 0, 0, 0.315, 0, 0, 0, 0.315, 0.00175077, 0.00138426, 0.00458542)
+shape = SubResource("BoxShape3D_u4xo2")
+disabled = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.25
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_wqnpr")
+}
+
+[connection signal="body_entered" from="Pivot/KnifeSharp/HitboxArea" to="." method="_on_hitbox_area_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

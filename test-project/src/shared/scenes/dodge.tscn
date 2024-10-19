@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://bs76rm217pjkt"]
+
+[ext_resource type="Script" path="res://src/shared/scripts/dodge.gd" id="1_d3nw7"]
+
+[node name="Dodge" type="Node"]
+script = ExtResource("1_d3nw7")
+
+[node name="DurationTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="CooldownTimer" type="Timer" parent="."]
+one_shot = true

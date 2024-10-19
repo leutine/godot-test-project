@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cvuv6ueorpmt"]
+
+[ext_resource type="Script" path="res://src/init/main.gd" id="1_chptf"]
+
+[node name="Init" type="Node"]
+script = ExtResource("1_chptf")

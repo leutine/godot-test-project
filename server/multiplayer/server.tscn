@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://csuiogw8b7rpj"]
-
-[ext_resource type="Script" path="res://multiplayer/server.gd" id="1_h5gr7"]
-
-[node name="Server" type="Node"]
-script = ExtResource("1_h5gr7")

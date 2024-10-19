@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://sfyv3hyv2m38"]
+
+[ext_resource type="Script" path="res://src/shared/scripts/enemy.gd" id="1_vi1g4"]
+[ext_resource type="PackedScene" uid="uid://crk4lfpy8252t" path="res://src/shared/scenes/character_model.tscn" id="2_1xno0"]
+[ext_resource type="PackedScene" uid="uid://ce8n6yppatv82" path="res://src/shared/scenes/stats.tscn" id="3_i8sui"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4onvx"]
+radius = 0.3
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8f014"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_k6ckn"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="Enemy" type="CharacterBody3D" groups=["enemies"]]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_vi1g4")
+
+[node name="CharacterModel" parent="." instance=ExtResource("2_1xno0")]
+
+[node name="Hitbox" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_4onvx")
+
+[node name="Hurtbox" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_8f014")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+target_desired_distance = 2.0
+path_height_offset = 0.1
+avoidance_enabled = true
+
+[node name="Stats" parent="." instance=ExtResource("3_i8sui")]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_k6ckn")
+
+[connection signal="velocity_computed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_velocity_computed"]
+[connection signal="died_signal" from="Stats" to="." method="_on_stats_died_signal"]
