@@ -32,7 +32,7 @@ jobs:
           mkdir -v -p build/windows
           EXPORT_DIR="$(readlink -f build)"
           cd $PROJECT_PATH
-          godot --headless --verbose --export-release "Client" "$EXPORT_DIR/windows/$EXPORT_NAME-client.exe"
+          godot --headless --verbose --export-debug "Client" "$EXPORT_DIR/windows/$EXPORT_NAME-client.exe"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -60,7 +60,7 @@ jobs:
           mkdir -v -p build/windows
           EXPORT_DIR="$(readlink -f build)"
           cd $PROJECT_PATH
-          godot --headless --verbose --export-release "Server" "$EXPORT_DIR/windows/$EXPORT_NAME-server.exe"
+          godot --headless --verbose --export-debug "Server" "$EXPORT_DIR/windows/$EXPORT_NAME-server.exe"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
