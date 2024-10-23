@@ -27,7 +27,6 @@ var is_dead: bool = false
 var is_on_floor_: bool = true
 var material = StandardMaterial3D.new()
 
-
 @export var name_label_text := "Player":
 	set(text):
 		name_label_text = text
@@ -42,13 +41,13 @@ func _apply_gravity(delta):
 	if not is_on_floor_:
 		velocity.y -= gravity * delta
 
-func _move(delta: float) -> void:
+func _move(_delta: float) -> void:
 	is_on_floor_ = is_on_floor()
 
 	# Handle jump.
-	if input.jump_input > 0 and is_on_floor():
+	if input.jump_input > 0 and is_on_floor_:
 		velocity.y = JUMP_VELOCITY * input.jump_input
-
+	
 	var speed = run_speed if input.run_input else SPEED
 	# if Input.is_action_just_pressed("dodge") and !dodge.is_dashing() and dodge.can_dash:
 	# 	dodge.start_dash(dodge_duration)
@@ -66,28 +65,24 @@ func _move(delta: float) -> void:
 	
 func _animate(delta: float) -> void:
 	hand.look_at(camera_controller.get_aim_target())
-	character_model_anim_player.speed_scale = 1.0
-
-	# Handle jump.
-	if not is_on_floor_:
-		character_model_anim_player.speed_scale = 1.0
-		character_model_anim_player.play("jump_short")
-
-	# Handle run
-	if input.run_input:
-		character_model_anim_player.speed_scale = 1.5
-	if not is_on_floor_:
-		character_model_anim_player.speed_scale = 1.0
 
 	# Handle direction
 	var direction: Vector3 = (transform.basis * Vector3(input.direction.x, 0, input.direction.y)).normalized()
 	direction = camera_controller.global_transform.basis * direction
+
 	if direction:
 		_set_orientation_to_direction(-direction, delta)
-		if character_model_anim_player.current_animation != "running" and is_on_floor_:
-			character_model_anim_player.play("running")
+
+	if not is_on_floor_:
+		character_model_anim_player.play("tpose")
 	else:
-		if character_model_anim_player.current_animation != "idle" and is_on_floor_:
+		if input.run_input and direction:
+			character_model_anim_player.play("running", 1, 1.5)
+		elif is_on_floor_ and input.jump_input > 0:
+			character_model_anim_player.play("jump_short")
+		elif direction:
+			character_model_anim_player.play("running")
+		else:
 			character_model_anim_player.play("idle")
 
 func _physics_process(delta: float) -> void:
